@@ -154,6 +154,26 @@
 }
 @media(max-width:900px){.gate,.planner{grid-template-columns:1fr;gap:34px}.stat-grid,.account-grid{grid-template-columns:1fr}.stat-grid article,.account-grid article{border-right:0;border-bottom:1px solid var(--line)}.mini-grid{grid-template-columns:1fr 1fr}.mini-grid article:nth-child(2){border-right:0}.panel{padding:24px 18px 30px}}
 
+.gate-min{display:flex;flex-direction:column;align-items:center;text-align:center;min-height:64vh;justify-content:center;padding:40px 0 24px}
+.gate-min .gate-logo{height:136px;width:auto;display:block;margin:0 0 22px;filter:drop-shadow(0 16px 34px rgba(212,168,67,.2))}
+.gate-prompt{margin:0 0 34px;color:#c9cbc2;font-size:16px;line-height:1.55}
+.gate-form{width:100%;max-width:440px}
+.gate-form .field{margin-top:0;text-align:center}
+.gate-form label{text-align:center}
+.keywrap{position:relative}
+.keywrap input{text-align:center;padding-right:54px;padding-left:54px;letter-spacing:.2em}
+.keywrap input::placeholder{letter-spacing:.12em}
+.keywrap .eye{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:40px;height:40px;display:grid;place-items:center;background:transparent;border:0;border-radius:6px;color:#a9aba1;cursor:pointer}
+.keywrap .eye:hover{color:#f0dcae}
+.keywrap .eye svg{width:20px;height:20px}
+.gate-links{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:22px}
+.gate-links a{display:inline-block;padding:11px 8px;font:500 13px 'DM Sans',sans-serif;color:#d8b45c}
+.gate-links a:hover{color:#f0dcae}
+.gate-links .soft{font-size:13px;color:#8b8d84}
+.gate-links .soft a{display:inline;padding:0 0 0 4px}
+.gate-min .note{margin-top:14px;text-align:center;min-height:1.4em}
+@media(max-width:600px){.gate-min{min-height:58vh;padding:20px 0}.gate-min .gate-logo{height:108px}}
+
 .tabs .short{display:none}
 .tf{display:flex;gap:6px;flex-wrap:wrap}
 .tf button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font:500 10px DM Mono,monospace;letter-spacing:.08em;color:#a9aba1;cursor:pointer}
@@ -181,46 +201,27 @@
   </header>
   <main class="page">
     <!-- ── the gate ─────────────────────────────────────────────────────── -->
-    <section id="gate">
-      <div class="page-head">
-        <div>
-          <div class="eyebrow"><i></i> MEMBER ACCESS</div>
-          <h1>ONE KEY.<br><em>NO PASSWORD.</em></h1>
-        </div>
-        <p>Your access key is the whole login. Paste it once and the dashboard stays open on this device until the key expires.</p>
-      </div>
-
-      <div class="gate">
-        <div class="gate-copy">
-          <ul>
-            <li>The key arrives by email once your account has been checked</li>
-            <li>One key per member — it carries your package and expiry with it</li>
-            <li>Add the dashboard to your home screen and it opens like an app</li>
-            <li>Lost it? Recover it with the email you registered</li>
-          </ul>
-          <div class="inline-links">
-            <a href="../membership/">Get a key →</a>
-            <a href="../admin/">Demo admin →</a>
+    <section id="gate" class="gate-min">
+      <img class="gate-logo" src="../assets/logo-emblem.webp" width="640" height="479" alt="AurumX">
+      <p class="gate-prompt">Enter your access key to open the dashboard</p>
+      <form class="gate-form" id="login" novalidate>
+        <div class="field">
+          <label for="key">Access key</label>
+          <div class="keywrap">
+            <input class="mono" id="key" name="key" type="password" placeholder="AURX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+            <button class="eye" type="button" id="eye" aria-label="Show key" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
           </div>
         </div>
-
-        <form class="card" id="login">
-          <img class="seal" src="../assets/logo-emblem.webp" width="640" height="479" alt="AurumX emblem">
-          <h2>Log in</h2>
-          <p>Paste or type the key from your approval email. In this demo, approve an application in the admin first.</p>
-          <div class="field">
-            <label for="key">Access key</label>
-            <input class="mono" id="key" name="key" placeholder="AURX-XXXX-XXXX" autocomplete="off" spellcheck="false">
-            <small class="hint">Keys are case-insensitive. Spaces are ignored.</small>
-          </div>
-          <button class="btn-gold" type="submit">Log in <span>→</span></button>
-          <div class="inline-links">
-            <a href="#" id="forgot">Forgot your key?</a>
-            <a href="#" id="usedemo">Use the demo key</a>
-          </div>
-          <p class="note" id="msg"></p>
-        </form>
-      </div>
+        <button class="btn-gold" type="submit">Log in <span>&rarr;</span></button>
+        <p class="note" id="msg" role="status"></p>
+        <div class="gate-links">
+          <a href="#" id="forgot">Forgot your key?</a>
+          <span class="soft">No key yet?<a href="../membership/">Get access</a></span>
+          <a href="#" id="usedemo" class="soft">Use the demo key</a>
+        </div>
+      </form>
     </section>
 
     <!-- ── the console ──────────────────────────────────────────────────── -->
@@ -453,6 +454,12 @@ const tryKey = (raw) => {
 
 document.getElementById('login').addEventListener('submit', (e) => { e.preventDefault(); tryKey(keyInput.value); });
 document.getElementById('usedemo').addEventListener('click', (e) => { e.preventDefault(); keyInput.value = DEMO_KEY; tryKey(DEMO_KEY); });
+document.getElementById('eye').addEventListener('click', (e) => {
+  const on = keyInput.type === 'password';
+  keyInput.type = on ? 'text' : 'password';
+  e.currentTarget.setAttribute('aria-pressed', String(on)); e.currentTarget.setAttribute('aria-label', on ? 'Hide key' : 'Show key');
+  keyInput.focus();
+});
 document.getElementById('forgot').addEventListener('click', (e) => { e.preventDefault(); msg.textContent = 'In the live app this asks for your registered email and sends the key back to it.'; });
 document.getElementById('logout').addEventListener('click', (e) => { e.preventDefault(); app.hidden = true; gate.hidden = false; msg.textContent = ''; keyInput.value = ''; window.scrollTo({ top: 0 }); });
 
