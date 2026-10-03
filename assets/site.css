@@ -257,3 +257,8 @@ footer .brand{font-size:19px}
 footer .brand img{height:42px}
 @media(max-width:600px){.site-header .brand img{height:31px}.site-header .brand{padding:0}}
 .tablet-shot img{height:auto}
+
+/* round AX emblem: closing seal on the landing, mark at the top of the log-in card */
+.seal{display:block;height:116px;width:auto;margin:0 auto 28px;filter:drop-shadow(0 14px 30px rgba(212,168,67,.18))}
+.card .seal{height:68px;margin:0 0 20px;filter:none}
+@media(max-width:600px){.seal{height:92px}.card .seal{height:60px}}
