@@ -250,3 +250,9 @@ footer .brand{font-size:19px}
 .hero-shots img,.shots-phones img{width:auto}
 :focus-visible{outline:2px solid #d4a843;outline-offset:3px}
 .sample-line{margin-top:18px;font:500 11px DM Mono,monospace;letter-spacing:.08em;color:#e2bf72}
+
+/* official AurumX wordmark (replaces the typed placeholder) */
+.brand{display:flex;align-items:center;padding:0}
+.brand img{height:38px;width:auto;display:block}
+footer .brand img{height:42px}
+@media(max-width:600px){.site-header .brand img{height:31px}.site-header .brand{padding:0}}
