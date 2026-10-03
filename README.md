@@ -31,4 +31,4 @@ All pages carry `noindex`. Deploy: the Vercel project is linked to this reposito
 
 ## Share card (Open Graph)
 
-`assets/og-card.png` is 1200x630. Its source is `tools/og/og-card.html`; re-render it with `python tools/og/build.py` (needs Playwright and network for the Google fonts). Every page carries the Open Graph and Twitter tags. The landing page uses a 52-character title, a 133-character meta description and a 108-character `og:description`. `og:image` points at `https://aurumxmockup.vercel.app/assets/og-card.png`: when AurumX gets its own domain, change `SITE` in the page heads (search for `aurumxmockup.vercel.app`).
+`assets/og-card.png` is 1200x630. Its source is `tools/og/og-card.html`; re-render it with `python tools/og/build.py` (needs Playwright and network for the Google fonts). Every page carries the Open Graph and Twitter tags. The landing page uses a 52-character title, a 135-character meta description and a 109-character `og:description`. `og:image` points at `https://aurumxmockup.vercel.app/assets/og-card.png`: when AurumX gets its own domain, change `SITE` in the page heads (search for `aurumxmockup.vercel.app`).
