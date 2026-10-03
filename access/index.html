@@ -140,6 +140,17 @@
 }
 @media(max-width:900px){.gate,.planner{grid-template-columns:1fr;gap:34px}.stat-grid,.account-grid{grid-template-columns:1fr}.stat-grid article,.account-grid article{border-right:0;border-bottom:1px solid var(--line)}.mini-grid{grid-template-columns:1fr 1fr}.mini-grid article:nth-child(2){border-right:0}.panel{padding:24px 18px 30px}}
 
+.tabs .short{display:none}
+.tf{display:flex;gap:6px;flex-wrap:wrap}
+.tf button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font:500 10px DM Mono,monospace;letter-spacing:.08em;color:#a9aba1;cursor:pointer}
+.tf button[aria-pressed=true]{background:#d4a843;border-color:#d4a843;color:#17150f}
+.chart-box{position:relative;margin-top:24px;border:1px solid var(--line);border-radius:10px;background:#0c0c0b;overflow:hidden}
+#chart{height:430px}
+.chart-mark{position:absolute;left:14px;top:12px;width:104px;height:auto;opacity:.5;pointer-events:none;z-index:2}
+.chart-legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:18px;font:500 10px DM Mono,monospace;letter-spacing:.08em;color:#a9aba1}
+.chart-legend i{display:inline-block;width:14px;height:0;border-top:2px dashed currentColor;vertical-align:middle;margin-right:8px}
+@media(max-width:600px){#chart{height:340px}.chart-mark{width:84px;left:10px;top:10px}.tabs{gap:5px;padding:12px 10px}.tabs button{padding:9px 10px;font-size:10px;letter-spacing:.02em}.tabs .long{display:none}.tabs .short{display:inline}.tf button{padding:9px 13px;font-size:11px}.chart-legend{font-size:11px}}
+
 </style>
 </head>
 <body>
@@ -214,7 +225,8 @@
         </div>
         <div class="tabs" role="tablist">
           <button role="tab" aria-selected="true" data-tab="signal">Signal</button>
-          <button role="tab" aria-selected="false" data-tab="performance">Performance</button>
+          <button role="tab" aria-selected="false" data-tab="chart">Chart</button>
+          <button role="tab" aria-selected="false" data-tab="performance" aria-label="Performance"><span class="long">Performance</span><span class="short">Stats</span></button>
           <button role="tab" aria-selected="false" data-tab="planner">Planner</button>
           <button role="tab" aria-selected="false" data-tab="account">Account</button>
         </div>
@@ -246,6 +258,25 @@
             <div><dt>STOP LOSS</dt><dd class="stop">4381.98<small>RISK 207.9 PIPS</small></dd></div>
           </dl>
           <p class="note">Tap any level to copy it into your platform. One setup is active at a time — a new one replaces it and the old one moves into the record.</p>
+        </div>
+
+        <!-- Chart -->
+        <div class="panel" data-panel="chart">
+          <div class="panel-head">
+            <div><span>XAUUSD · CHART</span><h2>The setup, on the chart</h2></div>
+            <div class="tf" role="group" aria-label="Timeframe">
+              <button type="button" data-tf="15" aria-pressed="false">M15</button>
+              <button type="button" data-tf="60" aria-pressed="true">H1</button>
+              <button type="button" data-tf="240" aria-pressed="false">H4</button>
+              <button type="button" data-tf="1440" aria-pressed="false">D1</button>
+            </div>
+          </div>
+          <div class="chart-box">
+            <div id="chart" role="img" aria-label="XAUUSD candlestick chart with the entry, take-profit and stop-loss levels of the current setup"></div>
+            <img class="chart-mark" src="../assets/logo-wordmark.webp" alt="">
+          </div>
+          <div class="chart-legend"><span style="color:#efece3"><i></i>ENTRY</span><span style="color:var(--live)"><i></i>TAKE PROFIT</span><span style="color:var(--stop)"><i></i>STOP LOSS</span></div>
+          <p class="note">Sample candles drawn for this demo, not market data. Entry, targets and stop are the levels from the Signal tab.</p>
         </div>
 
         <!-- Performance -->
@@ -339,6 +370,7 @@
   </main>
 
     <footer><a class="brand" href="../" aria-label="AurumX home"><img src="../assets/logo-wordmark.webp" width="420" height="134" alt="AurumX"></a><p>Structured XAUUSD setups. You make the decision.</p><div><a href="../#transparency">Risk disclosure</a><a href="../membership/">Membership</a><a href="../access/">Member log in</a><a href="../support/">Support</a><a href="../terms/">Terms</a><a href="../privacy/">Privacy</a></div><small>&copy; 2026 AurumX. Trading involves risk. Past results are not a promise of future ones.</small></footer>
+<script src="../assets/lightweight-charts.js"></script>
 <script>
 const AX = {
   KEY: 'aurumx_demo_apps_v1',
@@ -409,8 +441,68 @@ document.getElementById('usedemo').addEventListener('click', (e) => { e.preventD
 document.getElementById('forgot').addEventListener('click', (e) => { e.preventDefault(); msg.textContent = 'In the live app this asks for your registered email and sends the key back to it.'; });
 document.getElementById('logout').addEventListener('click', (e) => { e.preventDefault(); app.hidden = true; gate.hidden = false; msg.textContent = ''; keyInput.value = ''; window.scrollTo({ top: 0 }); });
 
+
+// ── chart (TradingView Lightweight Charts, vendored in /assets) ──────────────
+let chart = null, series = null, lastCandle = null, tick = null;
+const mulberry = (a) => () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+const LAST = 4361.19;
+const makeCandles = (tfMin) => {
+  const rnd = mulberry(7 + tfMin), n = tfMin >= 1440 ? 120 : 160, step = tfMin * 60;
+  const vol = Math.sqrt(tfMin) * 0.55;
+  let t = Math.floor(Date.now() / 1000 / step) * step - n * step, price = 4300, out = [];
+  for (let i = 0; i < n; i++) {
+    const open = price, drift = Math.sin(i / 11) * vol * 0.35 + (rnd() - 0.5) * vol * 2.2;
+    const close = open + drift, high = Math.max(open, close) + rnd() * vol, low = Math.min(open, close) - rnd() * vol;
+    out.push({ time: t, open, high, low, close }); price = close; t += step;
+  }
+  const shift = LAST - out[out.length - 1].close;   // land on the live price of the Signal tab
+  return out.map((c) => ({ time: c.time, open: +(c.open + shift).toFixed(2), high: +(c.high + shift).toFixed(2), low: +(c.low + shift).toFixed(2), close: +(c.close + shift).toFixed(2) }));
+};
+const LEVELS = [
+  { price: 4368.75, title: 'ENTRY', color: '#efece3' },
+  { price: 4362.13, title: 'TP1', color: '#3ddc97' },
+  { price: 4355.52, title: 'TP2', color: '#3ddc97' },
+  { price: 4348.90, title: 'TP3', color: '#3ddc97' },
+  { price: 4381.98, title: 'SL', color: '#e0644f' },
+];
+const loadCandles = (tfMin) => {
+  const data = makeCandles(tfMin);
+  series.setData(data);
+  lastCandle = { ...data[data.length - 1] };
+  chart.timeScale().fitContent();
+};
+const initChart = () => {
+  if (chart || !window.LightweightCharts) return;
+  const LW = window.LightweightCharts;
+  chart = LW.createChart(document.getElementById('chart'), {
+    autoSize: true,
+    layout: { background: { type: 'solid', color: '#0c0c0b' }, textColor: '#9b9d93', fontFamily: 'DM Mono, monospace', fontSize: 11 },
+    grid: { vertLines: { color: '#171714' }, horzLines: { color: '#171714' } },
+    rightPriceScale: { borderColor: '#24241f', scaleMargins: { top: 0.12, bottom: 0.14 } },
+    timeScale: { borderColor: '#24241f', timeVisible: true, secondsVisible: false },
+    crosshair: { vertLine: { color: '#5a5a50', labelBackgroundColor: '#2a2a26' }, horzLine: { color: '#5a5a50', labelBackgroundColor: '#2a2a26' } },
+  });
+  series = chart.addSeries(LW.CandlestickSeries, { upColor: '#3ddc97', downColor: '#e0644f', borderUpColor: '#3ddc97', borderDownColor: '#e0644f', wickUpColor: '#3ddc97', wickDownColor: '#e0644f', priceLineColor: '#d4a843' });
+  LEVELS.forEach((l) => series.createPriceLine({ price: l.price, color: l.color, lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: l.title }));
+  loadCandles(60);
+  // a gentle simulated tick so the last candle breathes (skipped for reduced motion)
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    tick = setInterval(() => {
+      if (!lastCandle || document.hidden) return;
+      const close = +(lastCandle.close + (Math.random() - 0.5) * 0.9).toFixed(2);
+      lastCandle = { ...lastCandle, close, high: Math.max(lastCandle.high, close), low: Math.min(lastCandle.low, close) };
+      series.update(lastCandle);
+    }, 1800);
+  }
+};
+document.querySelectorAll('.tf button').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('.tf button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  if (series) loadCandles(Number(b.dataset.tf));
+}));
+
 document.querySelectorAll('.tabs button').forEach((btn) => {
   btn.addEventListener('click', () => {
+    if (btn.dataset.tab === 'chart') requestAnimationFrame(initChart);
     document.querySelectorAll('.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
     document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('open', p.dataset.panel === btn.dataset.tab));
   });
