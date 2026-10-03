@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Member access to the AurumX dashboard — one key, no password.">
+  <meta name="theme-color" content="#0e0e0e">
+  <title>Member Access — AurumX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Newsreader:ital@0;1&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="../assets/site.css">
+<style>
+
+/* ── the member console ─────────────────────────────────────────────────────
+   Gold stays the chrome accent, exactly as on the landing. Inside the console
+   colour carries meaning instead: emerald = live / target reached, red = stop,
+   so a member reads outcome before they read words. */
+:root{--live:#3ddc97;--stop:#e0644f}
+.gate{display:grid;grid-template-columns:1.05fr .95fr;gap:6vw;align-items:start;margin-top:58px}
+.gate-copy ul{list-style:none;padding:0;margin:30px 0 0;display:grid;gap:11px;max-width:460px}
+.gate-copy li{border-top:1px solid var(--line);padding-top:11px;font-size:14px;color:#c9cbc2}
+.console{margin-top:16px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0c0c0b}
+.console-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 20px;border-bottom:1px solid var(--line);font:400 10px DM Mono,monospace;color:#9b9d93}
+.console-top b{display:flex;align-items:center;gap:9px;font:600 13px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;color:#efece3}
+.console-top b i{width:7px;height:7px;border-radius:50%;background:var(--live);box-shadow:0 0 0 4px rgba(61,220,151,.16)}
+.tabs{display:flex;gap:8px;padding:14px 20px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{white-space:nowrap;background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 17px;font:500 10px DM Mono,monospace;letter-spacing:.08em;text-transform:uppercase;color:#a9aba1;cursor:pointer}
+.tabs button[aria-selected=true]{background:#d4a843;border-color:#d4a843;color:#17150f}
+.panel{display:none;padding:30px 24px 36px}
+.panel.open{display:block}
+.panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.panel-head span{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.panel-head h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;letter-spacing:-.035em;font-weight:600;margin:10px 0 0}
+.pill-sell{background:rgba(224,100,79,.14);border:1px solid rgba(224,100,79,.5);color:var(--stop);border-radius:999px;padding:7px 15px;font:500 10px DM Mono,monospace;letter-spacing:.1em}
+.price-row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:28px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.price-row b{display:block;font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.price-row strong{display:block;margin-top:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(40px,5vw,60px);font-weight:600;letter-spacing:-.045em}
+.price-row .pips strong{color:var(--live);text-align:right}
+.rail{margin-top:30px}
+.rail-track{position:relative;height:3px;background:#24241f;border-radius:3px}
+.rail-fill{position:absolute;inset:0 62% 0 0;background:var(--live);border-radius:3px}
+.rail-track i{position:absolute;top:50%;width:2px;height:11px;background:#3a3a33;transform:translate(-50%,-50%)}
+.rail-track i.now{width:13px;height:13px;border-radius:50%;background:#efece3;box-shadow:0 0 0 4px rgba(239,236,227,.12)}
+.rail-track i.hit{background:var(--live)}
+.rail-track i.stop{background:var(--stop)}
+.rail-labels{position:relative;height:14px;margin-top:14px;font:400 9px DM Mono,monospace;color:#9b9d93}
+.rail-labels span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.rail-labels span:first-child{transform:none}
+.rail-labels span:last-child{transform:translateX(-100%)}
+.rail-labels span.hit{color:var(--live)}
+.rail-labels span.stop{color:var(--stop)}
+.be-note{display:flex;align-items:center;gap:11px;margin-top:26px;border:1px solid rgba(212,168,67,.4);background:rgba(212,168,67,.08);border-radius:8px;padding:14px 16px}
+.be-note b{font:500 11px DM Mono,monospace;letter-spacing:.08em;color:#e2bf72}
+.be-note small{color:#a9aba1;font-size:12px}
+.levels{margin:30px 0 0}
+.levels div{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:15px 0;border-bottom:1px solid var(--line)}
+.levels dt{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.levels dd{margin:0;text-align:right;font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.levels dd small{display:block;margin-top:5px;font:400 10px DM Mono,monospace;letter-spacing:.04em;color:#9b9d93}
+.levels dd.hit{color:var(--live)}
+.levels dd.stop{color:var(--stop)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:10px;margin-top:26px;overflow:hidden}
+.stat-grid article{padding:24px 22px;border-right:1px solid var(--line)}
+.stat-grid article:last-child{border-right:0}
+.stat-grid b{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.stat-grid strong{display:block;margin-top:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(34px,4vw,48px);font-weight:600;letter-spacing:-.045em}
+.stat-grid strong.gold{color:#d8b45c}
+.mini-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-top:0;border-radius:0 0 10px 10px;margin-top:-10px;overflow:hidden}
+.mini-grid article{padding:18px 20px;border-right:1px solid var(--line)}
+.mini-grid article:last-child{border-right:0}
+.mini-grid b{font:500 9px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.mini-grid strong{display:block;margin-top:8px;font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:600;letter-spacing:-.03em}
+.mini-grid strong.live{color:var(--live)}
+.mini-grid strong.stop{color:var(--stop)}
+.bars{margin-top:34px}
+.bars h3,.history h3{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1;margin:0 0 18px;text-transform:uppercase}
+.bar{margin-bottom:15px}
+.bar-top{display:flex;justify-content:space-between;font:400 11px DM Mono,monospace;color:#c9cbc2}
+.bar-track{margin-top:7px;height:4px;background:#1d1d19;border-radius:4px;overflow:hidden}
+.bar-track span{display:block;height:100%;background:var(--live);border-radius:4px}
+.bar-track span.stop{background:var(--stop)}
+.history{margin-top:38px;border-top:1px solid var(--line);padding-top:26px}
+.history>div{display:grid;grid-template-columns:64px 1fr auto;gap:18px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.history i{font:500 9px DM Mono,monospace;letter-spacing:.08em;text-align:center;border:1px solid var(--line);border-radius:4px;padding:5px 0;color:#c9cbc2;font-style:normal}
+.history b{font:600 14px 'Plus Jakarta Sans',sans-serif}
+.history small{display:block;margin-top:3px;font:400 10px DM Mono,monospace;color:#9b9d93}
+.history em{font-style:normal;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:16px;font-variant-numeric:tabular-nums;color:var(--live)}
+.history em.flat{color:#9b9d93}
+.planner{display:grid;grid-template-columns:.9fr 1.1fr;gap:5vw;margin-top:28px}
+.planner-out{border:1px solid var(--line);border-radius:10px;padding:26px 24px;background:#0f0f0e;align-self:start}
+.planner-out div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.planner-out div:last-child{border-bottom:0}
+.planner-out dt{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.planner-out dd{margin:0;font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.planner-out dd.gold{color:#d8b45c;font-size:32px}
+.account-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:28px}
+.account-grid article{padding:22px;border-right:1px solid var(--line)}
+.account-grid article:last-child{border-right:0}
+.account-grid b{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.account-grid strong{display:block;margin-top:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:600;letter-spacing:-.03em}
+.key-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:26px;border:1px solid var(--line);border-radius:10px;padding:18px 20px;background:#0f0f0e}
+.key-row code{font:500 17px DM Mono,monospace;letter-spacing:.2em;color:#f0dcae}
+.key-row button{margin-left:auto}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:18px;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.switch-row p{margin:0;font-size:13px;color:#a9aba1;max-width:440px}
+.switch{position:relative;width:52px;height:28px;border-radius:999px;background:#24241f;border:1px solid var(--line);cursor:pointer}
+.switch:after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#9b9d93;transition:.18s}
+.switch[aria-checked=true]{background:rgba(61,220,151,.2);border-color:rgba(61,220,151,.55)}
+.switch[aria-checked=true]:after{left:27px;background:var(--live)}
+@media(max-width:600px){
+  /* all four tabs should fit without a sideways nudge */
+  .console-top{flex-direction:column;align-items:flex-start;gap:8px}
+  /* the tab row is the console's whole navigation — on a phone it scrolled
+     away behind the header the moment you read the first panel */
+  /* sticky needs a scrollport: the console's own overflow clip cancelled it */
+  .console{overflow:visible}
+  .tabs{gap:6px;padding:12px 14px;position:sticky;top:75px;z-index:10;background:#0c0c0b}
+  .tabs button{padding:10px 12px;font-size:10px;letter-spacing:.05em}
+  .panel{padding:22px 15px 28px}
+  .panel-head h2{font-size:22px}
+  .price-row strong{font-size:38px}
+  .levels dd{font-size:19px}
+  .history>div{grid-template-columns:52px 1fr auto;gap:12px}
+  .history b{font-size:13px}
+  .history em{font-size:15px}
+  .planner-out{padding:22px 18px}
+  .planner-out dd{font-size:19px}
+  .planner-out dd.gold{font-size:27px}
+  .key-row code{font-size:15px}
+  .gate-copy li{font-size:13.5px}
+  .console-top span,.panel-head span,.price-row b,.stat-grid b,.mini-grid b,
+  .levels dt,.planner-out dt,.account-grid b,.bars h3,.history h3{font-size:11px}
+  .rail-labels{font-size:10px}
+  .bar-top{font-size:12px}
+}
+@media(max-width:900px){.gate,.planner{grid-template-columns:1fr;gap:34px}.stat-grid,.account-grid{grid-template-columns:1fr}.stat-grid article,.account-grid article{border-right:0;border-bottom:1px solid var(--line)}.mini-grid{grid-template-columns:1fr 1fr}.mini-grid article:nth-child(2){border-right:0}.panel{padding:24px 18px 30px}}
+
+</style>
+</head>
+<body>
+  <div class="demo-strip"><b>DEMO</b> <span>Design preview only &mdash; the dashboard is filled with sample data, nothing is live.</span></div>
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="AurumX home">AURUM<span>X</span></a>
+    <nav aria-label="Main navigation">
+      <a href="../#signal">Real signal</a><a href="../#process">How it works</a><a href="../membership/">Membership</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="nav-cta" href="../membership/">Join</a>
+      <a class="nav-login" href="../access/">Log in</a>
+    </div>
+  </header>
+  <main class="page">
+    <!-- ── the gate ─────────────────────────────────────────────────────── -->
+    <section id="gate">
+      <div class="page-head">
+        <div>
+          <div class="eyebrow"><i></i> MEMBER ACCESS</div>
+          <h1>ONE KEY.<br><em>NO PASSWORD.</em></h1>
+        </div>
+        <p>Your access key is the whole login. Paste it once and the dashboard stays open on this device until the key expires.</p>
+      </div>
+
+      <div class="gate">
+        <div class="gate-copy">
+          <ul>
+            <li>The key arrives by email once your account has been checked</li>
+            <li>One key per member — it carries your package and expiry with it</li>
+            <li>Add the dashboard to your home screen and it opens like an app</li>
+            <li>Lost it? Recover it with the email you registered</li>
+          </ul>
+          <div class="inline-links">
+            <a href="../membership/">Get a key →</a>
+            <a href="../admin/">Demo admin →</a>
+          </div>
+        </div>
+
+        <form class="card" id="login">
+          <h2>Log in</h2>
+          <p>Paste or type the key from your approval email. In this demo, approve an application in the admin first.</p>
+          <div class="field">
+            <label for="key">Access key</label>
+            <input class="mono" id="key" name="key" placeholder="AURX-XXXX-XXXX" autocomplete="off" spellcheck="false">
+            <small class="hint">Keys are case-insensitive. Spaces are ignored.</small>
+          </div>
+          <button class="btn-gold" type="submit">Log in <span>→</span></button>
+          <div class="inline-links">
+            <a href="#" id="forgot">Forgot your key?</a>
+            <a href="#" id="usedemo">Use the demo key</a>
+          </div>
+          <p class="note" id="msg"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ── the console ──────────────────────────────────────────────────── -->
+    <section id="app" hidden>
+      <div class="page-head">
+        <div>
+          <div class="eyebrow"><i></i> <span id="signed">SIGNED IN</span></div>
+          <h1>XAUUSD,<br><em>ON THE RECORD.</em></h1>
+        </div>
+        <p>Everything a member sees after logging in: the live setup, the performance record, the risk planner and the account itself. All figures here are sample data.</p>
+      </div>
+
+      <div class="console">
+        <div class="console-top">
+          <b><i></i> AURUMX · XAUUSD</b>
+          <span>LAST SYNC 08:25:39 · NEXT SETUP 06:03</span>
+        </div>
+        <div class="tabs" role="tablist">
+          <button role="tab" aria-selected="true" data-tab="signal">Signal</button>
+          <button role="tab" aria-selected="false" data-tab="performance">Performance</button>
+          <button role="tab" aria-selected="false" data-tab="planner">Planner</button>
+          <button role="tab" aria-selected="false" data-tab="account">Account</button>
+        </div>
+
+        <!-- Signal -->
+        <div class="panel open" data-panel="signal">
+          <div class="panel-head">
+            <div><span>XAUUSD · SCALPING</span><h2>Sell setup confirmed</h2></div>
+            <span class="pill-sell">SELL</span>
+          </div>
+          <div class="price-row">
+            <div><b>LIVE PRICE</b><strong>4361.19</strong></div>
+            <div class="pips"><b>RUNNING PIPS</b><strong>+75.6</strong></div>
+          </div>
+          <div class="rail">
+            <div class="rail-track">
+              <div class="rail-fill"></div>
+              <i class="stop" style="left:0"></i><i style="left:22%"></i><i class="hit" style="left:38%"></i>
+              <i class="now" style="left:38%"></i><i style="left:68%"></i><i style="left:100%"></i>
+            </div>
+            <div class="rail-labels"><span class="stop" style="left:0">SL</span><span style="left:22%">ENTRY</span><span class="hit" style="left:38%">TP1 ✓</span><span style="left:68%">TP2</span><span style="left:100%">TP3</span></div>
+          </div>
+          <div class="be-note"><b>BE LEVEL HIT</b><small>Lock break-even, then trail.</small></div>
+          <dl class="levels">
+            <div><dt>ENTRY</dt><dd>4368.75</dd></div>
+            <div><dt>TP1</dt><dd class="hit">4362.13<small>HIT · LOCK BE</small></dd></div>
+            <div><dt>TP2</dt><dd>4355.52<small>RANGE 56.7 PIPS</small></dd></div>
+            <div><dt>TP3</dt><dd>4348.90<small>RANGE 122.9 PIPS</small></dd></div>
+            <div><dt>STOP LOSS</dt><dd class="stop">4381.98<small>RISK 207.9 PIPS</small></dd></div>
+          </dl>
+          <p class="note">Tap any level to copy it into your platform. One setup is active at a time — a new one replaces it and the old one moves into the record.</p>
+        </div>
+
+        <!-- Performance -->
+        <div class="panel" data-panel="performance">
+          <div class="panel-head">
+            <div><span>THIS WEEK · 20–23 SEPTEMBER</span><h2>The record, counted the same way</h2></div>
+            <span style="font:400 10px DM Mono,monospace;color:#9b9d93">DAY · WEEK · MONTH · CUSTOM</span>
+          </div>
+          <div class="stat-grid">
+            <article><b>WIN RATE</b><strong>95.9%</strong></article>
+            <article><b>TOTAL PIPS</b><strong class="gold">3,251.3</strong></article>
+          </div>
+          <div class="mini-grid">
+            <article><b>SIGNALS</b><strong>104</strong></article>
+            <article><b>TP</b><strong class="live">18</strong></article>
+            <article><b>BE</b><strong>52</strong></article>
+            <article><b>SL</b><strong class="stop">3</strong></article>
+          </div>
+          <div class="bars">
+            <h3>Outcome distribution</h3>
+            <div class="bar"><div class="bar-top"><span>TP1</span><span>14.4%</span></div><div class="bar-track"><span style="width:14.4%"></span></div></div>
+            <div class="bar"><div class="bar-top"><span>TP2</span><span>2.9%</span></div><div class="bar-track"><span style="width:2.9%"></span></div></div>
+            <div class="bar"><div class="bar-top"><span>TP3</span><span>0.0%</span></div><div class="bar-track"><span style="width:0.6%"></span></div></div>
+            <div class="bar"><div class="bar-top"><span>BE</span><span>50.0%</span></div><div class="bar-track"><span style="width:50%"></span></div></div>
+            <div class="bar"><div class="bar-top"><span>SL</span><span>2.9%</span></div><div class="bar-track"><span class="stop" style="width:2.9%"></span></div></div>
+          </div>
+          <div class="history">
+            <h3>Signal history — 10 of 104</h3>
+            <div><i>BUY</i><div><b>TP1</b><small>23/09/26 · 11:30</small></div><em>+56.8</em></div>
+            <div><i>BUY</i><div><b>TP1</b><small>23/09/26 · 11:00</small></div><em>+57.5</em></div>
+            <div><i>BUY</i><div><b>EXPIRED</b><small>23/09/26 · 10:30</small></div><em class="flat">+0.0</em></div>
+            <div><i>SELL</i><div><b>BREAK-EVEN</b><small>23/09/26 · 09:30</small></div><em>+41.2</em></div>
+            <div><i>SELL</i><div><b>TP2</b><small>22/09/26 · 20:00</small></div><em>+88.4</em></div>
+          </div>
+          <p class="note">Break-even is booked at 80% of the peak the trade reached, so a trade that ran and came back still shows what it gave you. Expired setups count neither way.</p>
+        </div>
+
+        <!-- Planner -->
+        <div class="panel" data-panel="planner">
+          <div class="panel-head">
+            <div><span>RISK PLANNER</span><h2>Your risk, already calculated</h2></div>
+          </div>
+          <div class="planner">
+            <div>
+              <div class="field"><label for="bal">Account balance (USD)</label><input id="bal" type="number" value="5000" min="0" step="100"></div>
+              <div class="field"><label for="risk">Risk per trade (%)</label><input id="risk" type="number" value="1" min="0.1" max="10" step="0.1"></div>
+              <p class="note">The stop distance comes from the live setup — 207.9 pips on the current SELL — so the numbers move with the signal, not with a calculator you keep somewhere else.</p>
+            </div>
+            <dl class="planner-out">
+              <div><dt>LOT SIZE</dt><dd class="gold" id="lots">0.02</dd></div>
+              <div><dt>RISK BUDGET</dt><dd id="riskamt">$50.00</dd></div>
+              <div><dt>VALUE PER PIP</dt><dd id="perpip">$0.20</dd></div>
+              <div><dt>AT STOP · 207.9 PIPS</dt><dd id="atsl">&minus;$41.58</dd></div>
+              <div><dt>AT TP1 · 65.4 PIPS</dt><dd id="attp">+$13.08</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Account -->
+        <div class="panel" data-panel="account">
+          <div class="panel-head">
+            <div><span>ACCOUNT</span><h2>Key, package and alerts</h2></div>
+          </div>
+          <div class="account-grid">
+            <article><b>PACKAGE</b><strong id="a-pkg">Full month</strong></article>
+            <article><b>ACCESS EXPIRES</b><strong id="a-exp">—</strong></article>
+            <article><b>SESSION</b><strong>This device</strong></article>
+          </div>
+          <div class="key-row">
+            <span style="font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1">ACCESS KEY</span>
+            <code id="keyout">•••• •••• ••••</code>
+            <button class="btn-ghost" type="button" id="reveal">Show key</button>
+          </div>
+          <div class="switch-row">
+            <div><strong style="font:600 15px 'Plus Jakarta Sans',sans-serif">Signal alerts</strong><p>A push the moment a setup opens, and again when it reaches a target.</p></div>
+            <div class="switch" role="switch" aria-checked="true" tabindex="0" id="notif"></div>
+          </div>
+          <div class="switch-row">
+            <div><strong style="font:600 15px 'Plus Jakarta Sans',sans-serif">Renew access</strong><p>Extend the current key. Days are added to what is left, never reset.</p></div>
+            <a class="btn-ghost" href="../membership/">Renew →</a>
+          </div>
+          <p class="note">Logging out clears the key from this device only. The key itself stays valid until it expires.</p>
+        </div>
+      </div>
+
+      <div class="inline-links" style="margin-top:28px">
+        <a href="#" id="logout">Log out</a>
+        <a href="../">Back to the landing →</a>
+      </div>
+    </section>
+  </main>
+
+    <footer><a class="brand" href="../">AURUM<span>X</span></a><p>Structured XAUUSD setups. You make the decision.</p><div><a href="../#transparency">Risk disclosure</a><a href="../membership/">Membership</a><a href="../access/">Member log in</a><a href="../support/">Support</a><a href="../terms/">Terms</a><a href="../privacy/">Privacy</a></div><small>&copy; 2026 AurumX. Trading involves risk. Past results are not a promise of future ones.</small></footer>
+<script>
+const AX = {
+  KEY: 'aurumx_demo_apps_v1',
+  TIERS: {
+    t1: { deposit: 100, label: '5 trading days', pkg: 'Starter', days: 7 },
+    t2: { deposit: 200, label: 'Up to 11 trading days', pkg: 'Standard', days: 15 },
+    t3: { deposit: 250, label: 'Up to 22 trading days', pkg: 'Full month', days: 30 },
+  },
+  seed() {
+    const now = Date.now(), d = (n) => new Date(now - n * 36e5).toISOString();
+    const mk = (id, name, email, phone, acct, tier, status, hrs, key) => {
+      const t = this.TIERS[tier];
+      return { id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true };
+    };
+    return [
+      mk('APP-2041', 'Aisyah Rahman', 'aisyah@example.com', '+60123456789', '4821907', 't2', 'pending', 3),
+      mk('APP-2038', 'Daniel Lim', 'daniel@example.com', '+60198765432', '4821655', 't3', 'pending', 20),
+      mk('APP-2031', 'Farid Hassan', 'farid@example.com', '+60112223344', '4820871', 't1', 'approved', 52, 'AURX-7K3M-Q9XD'),
+    ];
+  },
+  load() {
+    let list = null;
+    try { list = JSON.parse(localStorage.getItem(this.KEY)); } catch {}
+    if (!list) { list = this.seed(); this.save(list); }
+    return list;
+  },
+  save(list) { try { localStorage.setItem(this.KEY, JSON.stringify(list)); } catch {} },
+  makeKey() {
+    const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const part = () => Array.from({ length: 4 }, () => c[Math.floor(Math.random() * c.length)]).join('');
+    return 'AURX-' + part() + '-' + part();
+  },
+  addDays(iso, d) { const t = new Date(iso); t.setDate(t.getDate() + d); return t.toISOString(); },
+  fmt(iso) { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); },
+  norm(k) { return String(k || '').toUpperCase().replace(/\s+/g, ''); },
+};
+
+const gate = document.getElementById('gate');
+const app = document.getElementById('app');
+const msg = document.getElementById('msg');
+const keyInput = document.getElementById('key');
+const DEMO_KEY = 'AURX-DEMO-2026';
+let currentKey = DEMO_KEY;
+
+const open = (rec) => {
+  currentKey = rec.key;
+  document.getElementById('signed').textContent = 'SIGNED IN \u2014 ' + rec.pkg.toUpperCase() + ' \u00b7 ' + rec.label.toUpperCase();
+  document.getElementById('a-pkg').textContent = rec.pkg + ' \u00b7 ' + rec.days + ' days';
+  document.getElementById('a-exp').textContent = AX.fmt(rec.expires);
+  gate.hidden = true; app.hidden = false; window.scrollTo({ top: 0 });
+};
+const demoRec = () => ({ key: DEMO_KEY, pkg: 'Full month', label: 'Up to 22 trading days', days: 30, expires: AX.addDays(new Date().toISOString(), 30) });
+const tryKey = (raw) => {
+  const k = AX.norm(raw);
+  if (!k) { msg.textContent = 'Enter your access key.'; keyInput.focus(); return; }
+  msg.textContent = 'Validating...';
+  setTimeout(() => {
+    if (k === DEMO_KEY) return open(demoRec());
+    const rec = (AX.load() || []).find((a) => a.status === 'approved' && a.key && AX.norm(a.key) === k);
+    if (!rec) { msg.textContent = 'We do not recognise that key. Approve an application in the demo admin first, or use the demo key.'; return; }
+    if (new Date(rec.expires).getTime() < Date.now()) { msg.textContent = 'That key has expired. Renew on the membership page.'; return; }
+    open(rec);
+  }, 380);
+};
+
+document.getElementById('login').addEventListener('submit', (e) => { e.preventDefault(); tryKey(keyInput.value); });
+document.getElementById('usedemo').addEventListener('click', (e) => { e.preventDefault(); keyInput.value = DEMO_KEY; tryKey(DEMO_KEY); });
+document.getElementById('forgot').addEventListener('click', (e) => { e.preventDefault(); msg.textContent = 'In the live app this asks for your registered email and sends the key back to it.'; });
+document.getElementById('logout').addEventListener('click', (e) => { e.preventDefault(); app.hidden = true; gate.hidden = false; msg.textContent = ''; keyInput.value = ''; window.scrollTo({ top: 0 }); });
+
+document.querySelectorAll('.tabs button').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+    document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('open', p.dataset.panel === btn.dataset.tab));
+  });
+});
+
+const STOP_PIPS = 207.9, TP1_PIPS = 65.4;
+const money = (n) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const recalc = () => {
+  const bal = Number(document.getElementById('bal').value) || 0;
+  const pct = Number(document.getElementById('risk').value) || 0;
+  const riskAmt = bal * (pct / 100);
+  const lots = Math.max(0.01, Math.floor((riskAmt / (STOP_PIPS * 10)) * 100) / 100);
+  const perPip = lots * 10;
+  document.getElementById('riskamt').textContent = money(riskAmt);
+  document.getElementById('lots').textContent = lots.toFixed(2);
+  document.getElementById('perpip').textContent = money(perPip);
+  document.getElementById('atsl').textContent = '\u2212' + money(perPip * STOP_PIPS);
+  document.getElementById('attp').textContent = '+' + money(perPip * TP1_PIPS);
+};
+document.getElementById('bal').addEventListener('input', recalc);
+document.getElementById('risk').addEventListener('input', recalc);
+recalc();
+
+document.getElementById('reveal').addEventListener('click', (e) => {
+  const out = document.getElementById('keyout');
+  const hidden = out.textContent.includes('\u2022');
+  out.textContent = hidden ? currentKey : '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022';
+  e.currentTarget.textContent = hidden ? 'Hide key' : 'Show key';
+});
+const notif = document.getElementById('notif');
+const toggle = () => notif.setAttribute('aria-checked', notif.getAttribute('aria-checked') === 'true' ? 'false' : 'true');
+notif.addEventListener('click', toggle);
+notif.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
+// ?demo opens the console straight away (used for the landing screenshots)
+if (new URLSearchParams(location.search).has('demo')) open(demoRec());
+</script>
+
+</body>
+</html>

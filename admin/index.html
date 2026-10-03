@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="AurumX demo admin: review membership applications and approve them.">
+  <meta name="theme-color" content="#0e0e0e">
+  <title>Admin — AurumX demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Newsreader:ital@0;1&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <div class="demo-strip"><b>DEMO</b> <span>Demo admin &mdash; no login, data stays in this browser, nothing is emailed.</span></div>
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="AurumX home">AURUM<span>X</span></a>
+    <nav aria-label="Main navigation">
+      <a href="../#signal">Real signal</a><a href="../#process">How it works</a><a href="../membership/">Membership</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="nav-cta" href="../membership/">Join</a>
+      <a class="nav-login" href="../access/">Log in</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow"><i></i> ADMIN / DEMO</div>
+        <h1>REVIEW<br><em>APPLICATIONS.</em></h1>
+      </div>
+      <p>Where an admin checks each application against the broker's partner report and approves it. Approving issues a key and "emails" it. There is no login in this demo, and the list lives in this browser only.</p>
+    </div>
+
+    <div class="stats3">
+      <article><b>PENDING</b><strong id="n-pending">0</strong></article>
+      <article><b>APPROVED</b><strong id="n-approved">0</strong></article>
+      <article><b>REJECTED</b><strong id="n-rejected">0</strong></article>
+    </div>
+
+    <div class="apps-wrap">
+      <table class="apps">
+        <thead><tr><th>APPLIED</th><th>MEMBER</th><th>BROKER ACCOUNT</th><th>TIER</th><th>STATUS</th><th>ACTION</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="inline-links" style="margin-top:22px">
+      <a href="#" id="reset">Reset the demo data</a>
+      <a href="../membership/">New application &rarr;</a>
+      <a href="../access/">Member log in &rarr;</a>
+    </div>
+    <p class="note">The first three rows are sample data. A real application sent from the membership page appears at the top.</p>
+  </main>
+  <div class="toast" id="toast" hidden></div>
+  <footer><a class="brand" href="../">AURUM<span>X</span></a><p>Structured XAUUSD setups. You make the decision.</p><div><a href="../#transparency">Risk disclosure</a><a href="../membership/">Membership</a><a href="../access/">Member log in</a><a href="../support/">Support</a><a href="../terms/">Terms</a><a href="../privacy/">Privacy</a></div><small>&copy; 2026 AurumX. Trading involves risk. Past results are not a promise of future ones.</small></footer>
+<script>
+const AX = {
+  KEY: 'aurumx_demo_apps_v1',
+  TIERS: {
+    t1: { deposit: 100, label: '5 trading days', pkg: 'Starter', days: 7 },
+    t2: { deposit: 200, label: 'Up to 11 trading days', pkg: 'Standard', days: 15 },
+    t3: { deposit: 250, label: 'Up to 22 trading days', pkg: 'Full month', days: 30 },
+  },
+  seed() {
+    const now = Date.now(), d = (n) => new Date(now - n * 36e5).toISOString();
+    const mk = (id, name, email, phone, acct, tier, status, hrs, key) => {
+      const t = this.TIERS[tier];
+      return { id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true };
+    };
+    return [
+      mk('APP-2041', 'Aisyah Rahman', 'aisyah@example.com', '+60123456789', '4821907', 't2', 'pending', 3),
+      mk('APP-2038', 'Daniel Lim', 'daniel@example.com', '+60198765432', '4821655', 't3', 'pending', 20),
+      mk('APP-2031', 'Farid Hassan', 'farid@example.com', '+60112223344', '4820871', 't1', 'approved', 52, 'AURX-7K3M-Q9XD'),
+    ];
+  },
+  load() {
+    let list = null;
+    try { list = JSON.parse(localStorage.getItem(this.KEY)); } catch {}
+    if (!list) { list = this.seed(); this.save(list); }
+    return list;
+  },
+  save(list) { try { localStorage.setItem(this.KEY, JSON.stringify(list)); } catch {} },
+  makeKey() {
+    const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const part = () => Array.from({ length: 4 }, () => c[Math.floor(Math.random() * c.length)]).join('');
+    return 'AURX-' + part() + '-' + part();
+  },
+  addDays(iso, d) { const t = new Date(iso); t.setDate(t.getDate() + d); return t.toISOString(); },
+  fmt(iso) { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); },
+  norm(k) { return String(k || '').toUpperCase().replace(/\s+/g, ''); },
+};
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let list = AX.load();
+
+const toast = (t) => { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => { el.hidden = true; }, 5200); };
+const render = () => {
+  const by = (s) => list.filter((a) => a.status === s).length;
+  $('n-pending').textContent = by('pending'); $('n-approved').textContent = by('approved'); $('n-rejected').textContent = by('rejected');
+  $('rows').innerHTML = list.length ? list.map((a) => {
+    const act = a.status === 'pending'
+      ? '<div class="row-actions"><button class="ok" data-act="approve" data-id="' + a.id + '">Approve</button><button data-act="reject" data-id="' + a.id + '">Reject</button></div>'
+      : a.status === 'approved'
+        ? '<code>' + esc(a.key) + '</code><small>expires ' + AX.fmt(a.expires) + '</small>'
+        : '<small>No key issued</small>';
+    return '<tr><td>' + AX.fmt(a.created) + '<small>' + esc(a.id) + (a.sample ? ' &middot; sample' : '') + '</small></td>'
+      + '<td><b>' + esc(a.name) + '</b><small>' + esc(a.email) + '</small><small>' + esc(a.phone) + '</small></td>'
+      + '<td><code>' + esc(a.acct) + '</code><small>deposit $' + a.deposit + '</small></td>'
+      + '<td><b>' + esc(a.pkg) + '</b><small>' + esc(a.label) + '</small></td>'
+      + '<td><span class="pill ' + a.status + '">' + a.status + '</span></td><td>' + act + '</td></tr>';
+  }).join('') : '<tr><td colspan="6" class="empty">No applications yet.</td></tr>';
+};
+$('rows').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const a = list.find((x) => x.id === b.dataset.id); if (!a) return;
+  if (b.dataset.act === 'approve') {
+    a.status = 'approved'; a.key = AX.makeKey(); a.expires = AX.addDays(new Date().toISOString(), a.days);
+    toast('Approved. Key ' + a.key + ' "emailed" to ' + a.email + ' (simulated). Use it on the log-in page.');
+  } else { a.status = 'rejected'; toast('Rejected. Nothing was sent (simulated).'); }
+  AX.save(list); render();
+});
+$('reset').addEventListener('click', (e) => { e.preventDefault(); list = AX.seed(); AX.save(list); render(); toast('Demo data reset.'); });
+render();
+</script>
+</body>
+</html>

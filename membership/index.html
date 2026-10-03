@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="AurumX membership through the partner broker — open an account, deposit, get your access key.">
+  <meta name="theme-color" content="#0e0e0e">
+  <title>Membership — AurumX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Newsreader:ital@0;1&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="../assets/site.css">
+<style>
+
+.apply{display:grid;grid-template-columns:1.1fr .9fr;gap:5vw;margin-top:56px;align-items:start}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.steps-mini{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px;font:500 9px DM Mono,monospace;letter-spacing:.08em;color:#7a7c72}
+.steps-mini .on{color:#d8b45c}
+.otp-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap}
+.otp-row .field{flex:1;min-width:170px;margin-top:0}
+.verified{display:inline-flex;align-items:center;gap:8px;margin-top:10px;font:500 10px DM Mono,monospace;letter-spacing:.08em;color:#3ddc97}
+.terms{border:1px solid var(--line);border-radius:10px;padding:26px 24px;background:#111110}
+.terms h3{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1;margin:0 0 18px;text-transform:uppercase}
+.terms ol{margin:0;padding:0;list-style:none;counter-reset:s}
+.terms li{counter-increment:s;border-top:1px solid var(--line);padding:13px 0 13px 34px;position:relative;font-size:14px;line-height:1.6;color:#c9cbc2}
+.terms li:before{content:counter(s);position:absolute;left:0;top:13px;font:500 11px DM Mono,monospace;color:#d8b45c}
+.terms li b{color:#efece3;font-weight:600}
+.done{border:1px solid rgba(61,220,151,.45);background:rgba(61,220,151,.07);border-radius:10px;padding:34px 30px;margin-top:56px}
+.done>span{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#3ddc97}
+.done h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:30px;letter-spacing:-.04em;font-weight:600;margin:14px 0 0}
+.done p{color:#c9cbc2;line-height:1.7;max-width:600px}
+.ref{display:inline-block;margin-top:6px;border:1px solid var(--line);border-radius:6px;padding:10px 14px;font:500 15px DM Mono,monospace;letter-spacing:.14em;color:#f0dcae}
+@media(max-width:900px){.apply,.two{grid-template-columns:1fr}.apply{gap:34px}}
+@media(max-width:600px){.terms,.partner{padding:22px 18px}.done{padding:26px 22px}.done h2{font-size:25px}.steps-mini{font-size:10px}}
+
+</style>
+</head>
+<body>
+  <div class="demo-strip"><b>DEMO</b> <span>Design preview only &mdash; applications stay in this browser and nothing is sent.</span></div>
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="AurumX home">AURUM<span>X</span></a>
+    <nav aria-label="Main navigation">
+      <a href="../#signal">Real signal</a><a href="../#process">How it works</a><a href="../membership/">Membership</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="nav-cta" href="../membership/">Join</a>
+      <a class="nav-login" href="../access/">Log in</a>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="page-head">
+      <div>
+        <div class="eyebrow"><i></i> MEMBERSHIP / PARTNER BROKER</div>
+        <h1>OPEN AN ACCOUNT.<br><em>GET YOUR KEY.</em></h1>
+      </div>
+      <p>Membership is through our partner broker. Open a new live account with the AurumX partner link, deposit to the tier you want, and send us your account number. Once we have checked it, your access key is emailed to you.</p>
+    </div>
+
+    <section id="apply" class="apply">
+      <form class="card" id="form" novalidate>
+        <div class="steps-mini"><span class="on">01 YOUR DETAILS</span> <span>&middot;</span> <span id="s2">02 VERIFY EMAIL</span> <span>&middot;</span> <span id="s3">03 KEY BY EMAIL</span></div>
+        <h2>Your application</h2>
+        <p>Every application is checked against the broker's partner report before a key is issued.</p>
+
+        <div class="field">
+          <label>Choose your deposit tier</label>
+          <div class="tier-pick" id="tiers">
+            <label><span><strong>$100</strong> deposit</span><small>5 trading days</small><input type="radio" name="tier" value="t1"></label>
+            <label><span><strong>$200</strong> deposit</span><small>Up to 11 trading days</small><input type="radio" name="tier" value="t2" checked></label>
+            <label><span><strong>$250</strong> deposit</span><small>Up to 22 trading days</small><input type="radio" name="tier" value="t3"></label>
+          </div>
+          <small class="hint">Trading days are Monday to Friday. A key runs on calendar days (7, 15 or 30), so the count depends on the day you start.</small>
+        </div>
+
+        <div class="two">
+          <div class="field"><label for="name">Full name</label><input id="name" placeholder="Your full name" autocomplete="name"></div>
+          <div class="field"><label for="phone">Phone</label><input id="phone" type="tel" inputmode="tel" placeholder="+60123456789" autocomplete="tel"></div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <div class="otp-row">
+            <div class="field"><input id="email" type="email" placeholder="you@email.com" autocomplete="email"></div>
+            <button class="btn-ghost" type="button" id="send">Send code</button>
+          </div>
+          <small class="hint">Use the email you opened the broker account with. Your key is emailed here.</small>
+        </div>
+        <div class="field" id="otpfield" hidden>
+          <label for="otp">Verification code</label>
+          <div class="otp-row">
+            <div class="field"><input class="mono" id="otp" placeholder="6-digit code" inputmode="numeric" maxlength="6"></div>
+            <button class="btn-ghost" type="button" id="verify">Verify</button>
+          </div>
+          <small class="hint" id="otphint">Demo: any real e-mail is not sent. Use code <b>123456</b>.</small>
+          <span class="verified" id="okmsg" hidden>&check; EMAIL VERIFIED</span>
+        </div>
+        <div class="field">
+          <label for="acct">Broker account number</label>
+          <input class="mono" id="acct" inputmode="numeric" placeholder="e.g. 123456" autocomplete="off">
+          <small class="hint">The number of the new live account you opened with the partner link.</small>
+        </div>
+
+        <button class="btn-gold" type="submit">Submit application <span>&rarr;</span></button>
+        <p class="note err" id="msg" role="alert" hidden></p>
+        <p class="note">Nothing is sent anywhere. This demo keeps your application in this browser only, so you can approve it in the demo admin.</p>
+      </form>
+
+      <aside>
+        <div class="terms">
+          <h3>How membership works</h3>
+          <ol>
+            <li><b>Open a new live account</b> with our partner broker using the AurumX partner link below, even if you already have one.</li>
+            <li><b>Deposit</b> the amount for the tier you want.</li>
+            <li><b>Submit this form</b> with your new account number.</li>
+            <li><b>We verify it</b> against the broker's partner report, then email your access key.</li>
+          </ol>
+        </div>
+        <div class="partner">
+          <b>PARTNER BROKER LINK <span class="sample-tag">PLACEHOLDER</span></b>
+          <p>Opens an account under AurumX. Different account types may use a different partner code.</p>
+          <div class="partner-row">
+            <code id="pcode">AURUMX-0000</code>
+            <button class="btn-ghost" type="button" id="copy">Copy code</button>
+          </div>
+          <div class="partner-row"><a class="btn-ghost" href="#" id="openbroker">Open partner account &rarr;</a></div>
+        </div>
+        <div class="inline-links" style="margin-top:24px">
+          <a href="../admin/">Demo admin &rarr;</a>
+          <a href="../access/">Already have a key? Log in &rarr;</a>
+        </div>
+        <p class="note">Trading involves risk. AurumX provides structured setups; every trade is placed by you.</p>
+      </aside>
+    </section>
+
+    <section id="done" class="done" hidden aria-live="polite">
+      <span>APPLICATION RECEIVED</span>
+      <h2>We have your details.</h2>
+      <p>We check your account against the broker's partner report first, usually within one working day. Your access key then arrives at the email you entered (check spam too).</p>
+      <p>Your reference: <span class="ref" id="ref">APP-0000</span></p>
+      <div class="inline-links"><a href="../admin/">Approve it in the demo admin &rarr;</a><a href="../access/">Go to log in &rarr;</a></div>
+    </section>
+  </main>
+  <footer><a class="brand" href="../">AURUM<span>X</span></a><p>Structured XAUUSD setups. You make the decision.</p><div><a href="../#transparency">Risk disclosure</a><a href="../membership/">Membership</a><a href="../access/">Member log in</a><a href="../support/">Support</a><a href="../terms/">Terms</a><a href="../privacy/">Privacy</a></div><small>&copy; 2026 AurumX. Trading involves risk. Past results are not a promise of future ones.</small></footer>
+<script>
+const AX = {
+  KEY: 'aurumx_demo_apps_v1',
+  TIERS: {
+    t1: { deposit: 100, label: '5 trading days', pkg: 'Starter', days: 7 },
+    t2: { deposit: 200, label: 'Up to 11 trading days', pkg: 'Standard', days: 15 },
+    t3: { deposit: 250, label: 'Up to 22 trading days', pkg: 'Full month', days: 30 },
+  },
+  seed() {
+    const now = Date.now(), d = (n) => new Date(now - n * 36e5).toISOString();
+    const mk = (id, name, email, phone, acct, tier, status, hrs, key) => {
+      const t = this.TIERS[tier];
+      return { id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true };
+    };
+    return [
+      mk('APP-2041', 'Aisyah Rahman', 'aisyah@example.com', '+60123456789', '4821907', 't2', 'pending', 3),
+      mk('APP-2038', 'Daniel Lim', 'daniel@example.com', '+60198765432', '4821655', 't3', 'pending', 20),
+      mk('APP-2031', 'Farid Hassan', 'farid@example.com', '+60112223344', '4820871', 't1', 'approved', 52, 'AURX-7K3M-Q9XD'),
+    ];
+  },
+  load() {
+    let list = null;
+    try { list = JSON.parse(localStorage.getItem(this.KEY)); } catch {}
+    if (!list) { list = this.seed(); this.save(list); }
+    return list;
+  },
+  save(list) { try { localStorage.setItem(this.KEY, JSON.stringify(list)); } catch {} },
+  makeKey() {
+    const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const part = () => Array.from({ length: 4 }, () => c[Math.floor(Math.random() * c.length)]).join('');
+    return 'AURX-' + part() + '-' + part();
+  },
+  addDays(iso, d) { const t = new Date(iso); t.setDate(t.getDate() + d); return t.toISOString(); },
+  fmt(iso) { return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); },
+  norm(k) { return String(k || '').toUpperCase().replace(/\s+/g, ''); },
+};
+
+const $ = (id) => document.getElementById(id);
+let verified = false;
+const msg = $('msg');
+const showErr = (t) => { msg.textContent = t; msg.hidden = !t; };
+const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+$('email').addEventListener('input', () => { verified = false; $('okmsg').hidden = true; });
+$('send').addEventListener('click', () => {
+  if (!validEmail($('email').value)) { showErr('Please enter a valid email address first.'); return; }
+  showErr('');
+  $('otpfield').hidden = false; $('otp').focus();
+  $('s2').classList.add('on');
+});
+$('verify').addEventListener('click', () => {
+  if ($('otp').value.trim() !== '123456') { showErr('That code did not work. In this demo the code is 123456.'); return; }
+  showErr(''); verified = true; $('okmsg').hidden = false; $('s3').classList.add('on');
+});
+$('copy').addEventListener('click', async (e) => {
+  try { await navigator.clipboard.writeText($('pcode').textContent); e.currentTarget.textContent = 'Copied \u2713'; }
+  catch { e.currentTarget.textContent = 'Copy failed'; }
+  setTimeout(() => { e.currentTarget.textContent = 'Copy code'; }, 1500);
+});
+$('openbroker').addEventListener('click', (e) => { e.preventDefault(); showErr('This is a placeholder. The real AurumX partner link opens here.'); });
+
+$('form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = $('name').value.trim().replace(/\s+/g, ' ');
+  const email = $('email').value.trim().toLowerCase();
+  const phone = $('phone').value.trim();
+  const acct = $('acct').value.trim();
+  const tier = document.querySelector('input[name=tier]:checked').value;
+  if (name.length < 3) return showErr('Please enter your full name.');
+  if (!validEmail(email)) return showErr('Please enter a valid email address.');
+  if (!/^\+?[0-9]{9,15}$/.test(phone)) return showErr('Please enter a valid phone number with country code, digits only (9\u201315).');
+  if (!verified) return showErr('Please verify your email address first.');
+  if (!/^[0-9]{4,12}$/.test(acct)) return showErr('Please enter your broker account number (digits only).');
+  showErr('');
+  const list = AX.load();
+  const t = AX.TIERS[tier];
+  const id = 'APP-' + String(Math.floor(1000 + Math.random() * 9000));
+  list.unshift({ id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: new Date().toISOString(), status: 'pending', key: null, expires: null, sample: false });
+  AX.save(list);
+  $('ref').textContent = id;
+  $('apply').hidden = true; $('done').hidden = false; window.scrollTo({ top: 0 });
+});
+</script>
+</body>
+</html>
