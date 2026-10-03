@@ -83,11 +83,7 @@
 
         <div class="field">
           <label>Choose your deposit tier</label>
-          <div class="tier-pick" id="tiers">
-            <label><span><strong>$100</strong> deposit</span><small>5 trading days</small><input type="radio" name="tier" value="t1"></label>
-            <label><span><strong>$200</strong> deposit</span><small>Up to 11 trading days</small><input type="radio" name="tier" value="t2" checked></label>
-            <label><span><strong>$250</strong> deposit</span><small>Up to 22 trading days</small><input type="radio" name="tier" value="t3"></label>
-          </div>
+          <div class="tier-pick" id="tiers"></div>
           <small class="hint">Trading days are Monday to Friday. A key runs on calendar days (7, 15 or 30), so the count depends on the day you start.</small>
         </div>
 
@@ -161,22 +157,38 @@
   <footer><a class="brand" href="../" aria-label="AurumX home"><img src="../assets/logo-wordmark.webp" width="420" height="134" alt="AurumX"></a><p>Structured XAUUSD setups. You make the decision.</p><div><a href="../#transparency">Risk disclosure</a><a href="../membership/">Membership</a><a href="../access/">Member log in</a><a href="../support/">Support</a><a href="../terms/">Terms</a><a href="../privacy/">Privacy</a></div><small>&copy; 2026 AurumX. Trading involves risk. Past results are not a promise of future ones.</small></footer>
 <script>
 const AX = {
-  KEY: 'aurumx_demo_apps_v1',
-  TIERS: {
-    t1: { deposit: 100, label: '5 trading days', pkg: 'Starter', days: 7 },
-    t2: { deposit: 200, label: 'Up to 11 trading days', pkg: 'Standard', days: 15 },
-    t3: { deposit: 250, label: 'Up to 22 trading days', pkg: 'Full month', days: 30 },
+  KEY: 'aurumx_demo_apps_v1', SKEY: 'aurumx_demo_settings_v1', LKEY: 'aurumx_demo_log_v1', BKEY: 'aurumx_demo_bc_v1',
+  PKG: { t1: { pkg: 'Starter', days: 7 }, t2: { pkg: 'Standard', days: 15 }, t3: { pkg: 'Full month', days: 30 } },
+  DEFAULTS: {
+    partnerCode: 'AURUMX-0000', partnerLink: 'https://broker.example/aurumx', otp: true, announcement: '', announceOn: false,
+    tiers: { t1: { deposit: 100, label: '5 trading days' }, t2: { deposit: 200, label: 'Up to 11 trading days' }, t3: { deposit: 250, label: 'Up to 22 trading days' } },
+  },
+  settings() {
+    let s = null; try { s = JSON.parse(localStorage.getItem(this.SKEY)); } catch {}
+    const d = this.DEFAULTS;
+    return Object.assign({}, d, s || {}, { tiers: Object.assign({}, d.tiers, (s && s.tiers) || {}) });
+  },
+  saveSettings(s) { try { localStorage.setItem(this.SKEY, JSON.stringify(s)); } catch {} },
+  tier(id) {
+    const t = this.settings().tiers[id] || this.DEFAULTS.tiers[id], p = this.PKG[id];
+    return { id, pkg: p.pkg, days: p.days, deposit: Number(t.deposit) || 0, label: t.label };
   },
   seed() {
-    const now = Date.now(), d = (n) => new Date(now - n * 36e5).toISOString();
-    const mk = (id, name, email, phone, acct, tier, status, hrs, key) => {
-      const t = this.TIERS[tier];
-      return { id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true };
+    const now = Date.now(), d = (h) => new Date(now - h * 36e5).toISOString();
+    const mk = (id, name, email, phone, acct, tier, status, hrs, key, extra) => {
+      const t = this.tier(tier);
+      return Object.assign({ id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true }, extra || {});
     };
     return [
       mk('APP-2041', 'Aisyah Rahman', 'aisyah@example.com', '+60123456789', '4821907', 't2', 'pending', 3),
       mk('APP-2038', 'Daniel Lim', 'daniel@example.com', '+60198765432', '4821655', 't3', 'pending', 20),
+      mk('APP-2036', 'Ravi Kumar', 'ravi@example.com', '+60173344556', '4821590', 't1', 'rejected', 30),
       mk('APP-2031', 'Farid Hassan', 'farid@example.com', '+60112223344', '4820871', 't1', 'approved', 52, 'AURX-7K3M-Q9XD'),
+      mk('APP-2012', 'Marcus Lee', 'marcus@example.com', '+60166778899', '4818802', 't3', 'approved', 192, 'AURX-5NHT-2WQE'),
+      mk('APP-1990', 'Nurul Huda', 'nurul@example.com', '+60145566778', '4815531', 't3', 'approved', 480, 'AURX-9PLC-4RBA'),
+      mk('APP-1984', 'Kevin Tan', 'kevin@example.com', '+60187766554', '4814920', 't2', 'approved', 348, 'AURX-3GZV-8MKD'),
+      mk('APP-1977', 'Hakim Zain', 'hakim@example.com', '+60139988776', '4814407', 't2', 'approved', 120, 'AURX-6YQD-7HTN', { suspended: true }),
+      mk('APP-1902', 'Siti Aminah', 'siti@example.com', '+60152233441', '4809115', 't3', 'approved', 960, 'AURX-2KXR-5VWB'),
     ];
   },
   load() {
@@ -186,6 +198,14 @@ const AX = {
     return list;
   },
   save(list) { try { localStorage.setItem(this.KEY, JSON.stringify(list)); } catch {} },
+  logs() { try { return JSON.parse(localStorage.getItem(this.LKEY)) || []; } catch { return []; } },
+  log(text) { const l = this.logs(); l.unshift({ t: new Date().toISOString(), text }); try { localStorage.setItem(this.LKEY, JSON.stringify(l.slice(0, 40))); } catch {} },
+  broadcasts() { try { return JSON.parse(localStorage.getItem(this.BKEY)) || []; } catch { return []; } },
+  saveBroadcasts(l) { try { localStorage.setItem(this.BKEY, JSON.stringify(l.slice(0, 20))); } catch {} },
+  reset() { try { [this.KEY, this.SKEY, this.LKEY, this.BKEY].forEach((k) => localStorage.removeItem(k)); } catch {} },
+  members(list) { return (list || this.load()).filter((a) => a.status === 'approved' && a.key); },
+  daysLeft(a) { return Math.ceil((new Date(a.expires).getTime() - Date.now()) / 864e5); },
+  state(a) { if (a.suspended) return 'suspended'; const d = this.daysLeft(a); return d < 0 ? 'expired' : d <= 7 ? 'expiring' : 'active'; },
   makeKey() {
     const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     const part = () => Array.from({ length: 4 }, () => c[Math.floor(Math.random() * c.length)]).join('');
@@ -197,7 +217,11 @@ const AX = {
 };
 
 const $ = (id) => document.getElementById(id);
-let verified = false;
+const CFG = AX.settings();
+let verified = !CFG.otp;
+$('tiers').innerHTML = ['t1', 't2', 't3'].map((id) => { const t = AX.tier(id); return '<label><span><strong>$' + t.deposit + '</strong> deposit</span><small>' + t.label + '</small><input type="radio" name="tier" value="' + id + '"' + (id === 't2' ? ' checked' : '') + '></label>'; }).join('');
+$('pcode').textContent = CFG.partnerCode;
+if (!CFG.otp) { $('send').hidden = true; $('s2').hidden = true; $('s3').textContent = '02 KEY BY EMAIL'; }
 const msg = $('msg');
 const showErr = (t) => { msg.textContent = t; msg.hidden = !t; };
 const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
@@ -218,7 +242,7 @@ $('copy').addEventListener('click', async (e) => {
   catch { e.currentTarget.textContent = 'Copy failed'; }
   setTimeout(() => { e.currentTarget.textContent = 'Copy code'; }, 1500);
 });
-$('openbroker').addEventListener('click', (e) => { e.preventDefault(); showErr('This is a placeholder. The real AurumX partner link opens here.'); });
+$('openbroker').addEventListener('click', (e) => { e.preventDefault(); showErr('Demo: this opens ' + CFG.partnerLink + ' in the live site.'); });
 
 $('form').addEventListener('submit', (e) => {
   e.preventDefault();
@@ -230,14 +254,14 @@ $('form').addEventListener('submit', (e) => {
   if (name.length < 3) return showErr('Please enter your full name.');
   if (!validEmail(email)) return showErr('Please enter a valid email address.');
   if (!/^\+?[0-9]{9,15}$/.test(phone)) return showErr('Please enter a valid phone number with country code, digits only (9\u201315).');
-  if (!verified) return showErr('Please verify your email address first.');
+  if (CFG.otp && !verified) return showErr('Please verify your email address first.');
   if (!/^[0-9]{4,12}$/.test(acct)) return showErr('Please enter your broker account number (digits only).');
   showErr('');
   const list = AX.load();
-  const t = AX.TIERS[tier];
+  const t = AX.tier(tier);
   const id = 'APP-' + String(Math.floor(1000 + Math.random() * 9000));
   list.unshift({ id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: new Date().toISOString(), status: 'pending', key: null, expires: null, sample: false });
-  AX.save(list);
+  AX.save(list); AX.log('New application ' + id + ' from ' + name + ' (' + t.pkg + ')');
   $('ref').textContent = id;
   $('apply').hidden = true; $('done').hidden = false; window.scrollTo({ top: 0 });
 });

@@ -154,6 +154,31 @@
 }
 @media(max-width:900px){.gate,.planner{grid-template-columns:1fr;gap:34px}.stat-grid,.account-grid{grid-template-columns:1fr}.stat-grid article,.account-grid article{border-right:0;border-bottom:1px solid var(--line)}.mini-grid{grid-template-columns:1fr 1fr}.mini-grid article:nth-child(2){border-right:0}.panel{padding:24px 18px 30px}}
 
+.announce{padding:13px 20px;background:rgba(212,168,67,.1);border-bottom:1px solid rgba(212,168,67,.35);font-size:13.5px;line-height:1.55;color:#f0dcae}
+.announce b{font:500 10px DM Mono,monospace;letter-spacing:.1em;margin-right:10px;color:#e2bf72}
+
+.cal-note{margin:22px 0 0;font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1;text-transform:uppercase}
+.cal-day{margin-top:30px}
+.cal-day>h3{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1;text-transform:uppercase;margin:0;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.cal-row{display:grid;grid-template-columns:58px 52px 1fr auto;gap:14px;align-items:center;padding:16px 0;border-bottom:1px solid var(--line)}
+.cal-time{font:500 13px DM Mono,monospace;color:#efece3;font-variant-numeric:tabular-nums}
+.cal-cur{font:500 10px DM Mono,monospace;letter-spacing:.06em;border:1px solid var(--line);border-radius:4px;padding:5px 0;text-align:center;color:#c9cbc2}
+.cal-cur.usd{border-color:rgba(212,168,67,.55);color:#e2bf72}
+.cal-name b{display:block;font:600 14px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em;color:#efece3}
+.cal-name .imp{margin-top:7px}
+.imp{display:inline-flex;align-items:center;gap:4px;font:500 9px DM Mono,monospace;letter-spacing:.08em;color:#9b9d93}
+.imp i{width:6px;height:6px;border-radius:50%;background:#2a2a26}
+.imp.high i{background:var(--stop)}
+.imp.med i:nth-child(-n+2){background:#d4a843}
+.imp.low i:first-child{background:#7b7d73}
+.imp span{margin-left:6px}
+.cal-vals{display:grid;grid-template-columns:repeat(3,64px);gap:8px;text-align:right}
+.cal-vals div b{display:block;font:500 9px DM Mono,monospace;letter-spacing:.08em;color:#8b8d84}
+.cal-vals div span{display:block;margin-top:4px;font:500 13px DM Mono,monospace;color:#efece3;font-variant-numeric:tabular-nums}
+.cal-vals div span.act{color:#f0dcae}
+.cal-empty{padding:30px 0;color:#9b9d93;font-size:14px}
+@media(max-width:700px){.cal-row{grid-template-columns:54px 1fr;row-gap:10px}.cal-name{grid-column:2}.cal-vals{grid-column:1 / -1;grid-template-columns:repeat(3,1fr);text-align:left;padding-top:2px}.cal-cur{width:48px}.cal-time{align-self:start}}
+
 .gate-min{display:flex;flex-direction:column;align-items:center;text-align:center;min-height:64vh;justify-content:center;padding:40px 0 24px}
 .gate-min .gate-logo{height:136px;width:auto;display:block;margin:0 0 22px;filter:drop-shadow(0 16px 34px rgba(212,168,67,.2))}
 .gate-prompt{margin:0 0 34px;color:#c9cbc2;font-size:16px;line-height:1.55}
@@ -183,7 +208,7 @@
 .chart-mark{position:absolute;left:14px;top:12px;width:104px;height:auto;opacity:.5;pointer-events:none;z-index:2}
 .chart-legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:18px;font:500 10px DM Mono,monospace;letter-spacing:.08em;color:#a9aba1}
 .chart-legend i{display:inline-block;width:14px;height:0;border-top:2px dashed currentColor;vertical-align:middle;margin-right:8px}
-@media(max-width:600px){#chart{height:340px}.chart-mark{width:84px;left:10px;top:10px}.tabs{gap:5px;padding:12px 10px}.tabs button{padding:9px 10px;font-size:10px;letter-spacing:.02em}.tabs .long{display:none}.tabs .short{display:inline}.tf button{padding:9px 13px;font-size:11px}.chart-legend{font-size:11px}}
+@media(max-width:600px){#chart{height:340px}.chart-mark{width:84px;left:10px;top:10px}.tabs{gap:4px;padding:12px 8px}.tabs button{padding:9px 7px;font-size:10px;letter-spacing:0}.tabs .long{display:none}.tabs .short{display:inline}.tf button{padding:9px 13px;font-size:11px}.chart-legend{font-size:11px}}
 
 </style>
 </head>
@@ -239,11 +264,13 @@
           <b><i></i> AURUMX · XAUUSD</b>
           <span>LAST SYNC 08:25:39 · NEXT SETUP 06:03</span>
         </div>
+        <div class="announce" id="announce" hidden></div>
         <div class="tabs" role="tablist">
           <button role="tab" aria-selected="true" data-tab="signal">Signal</button>
           <button role="tab" aria-selected="false" data-tab="chart">Chart</button>
           <button role="tab" aria-selected="false" data-tab="performance" aria-label="Performance"><span class="long">Performance</span><span class="short">Stats</span></button>
-          <button role="tab" aria-selected="false" data-tab="planner">Planner</button>
+          <button role="tab" aria-selected="false" data-tab="planner"><span class="long">Planner</span><span class="short">Plan</span></button>
+          <button role="tab" aria-selected="false" data-tab="calendar" aria-label="Calendar"><span class="long">Calendar</span><span class="short">News</span></button>
           <button role="tab" aria-selected="false" data-tab="account">Account</button>
         </div>
 
@@ -351,6 +378,21 @@
           </div>
         </div>
 
+        <!-- Calendar -->
+        <div class="panel" data-panel="calendar">
+          <div class="panel-head">
+            <div><span>ECONOMIC CALENDAR &middot; MALAYSIA TIME (MYT)</span><h2>What can move gold</h2></div>
+            <div class="tf" role="group" aria-label="Impact filter">
+              <button type="button" data-imp="all" aria-pressed="true">All</button>
+              <button type="button" data-imp="high" aria-pressed="false">High</button>
+              <button type="button" data-imp="med" aria-pressed="false">Medium</button>
+              <button type="button" data-imp="low" aria-pressed="false">Low</button>
+            </div>
+          </div>
+          <div id="cal-body" aria-live="polite"></div>
+          <p class="note">Sample events for this demo. The live app lists the real economic calendar in Malaysia time, with US releases highlighted because they move gold the most. Setups can be more volatile around High-impact events.</p>
+        </div>
+
         <!-- Account -->
         <div class="panel" data-panel="account">
           <div class="panel-head">
@@ -389,22 +431,38 @@
 <script src="../assets/lightweight-charts.js"></script>
 <script>
 const AX = {
-  KEY: 'aurumx_demo_apps_v1',
-  TIERS: {
-    t1: { deposit: 100, label: '5 trading days', pkg: 'Starter', days: 7 },
-    t2: { deposit: 200, label: 'Up to 11 trading days', pkg: 'Standard', days: 15 },
-    t3: { deposit: 250, label: 'Up to 22 trading days', pkg: 'Full month', days: 30 },
+  KEY: 'aurumx_demo_apps_v1', SKEY: 'aurumx_demo_settings_v1', LKEY: 'aurumx_demo_log_v1', BKEY: 'aurumx_demo_bc_v1',
+  PKG: { t1: { pkg: 'Starter', days: 7 }, t2: { pkg: 'Standard', days: 15 }, t3: { pkg: 'Full month', days: 30 } },
+  DEFAULTS: {
+    partnerCode: 'AURUMX-0000', partnerLink: 'https://broker.example/aurumx', otp: true, announcement: '', announceOn: false,
+    tiers: { t1: { deposit: 100, label: '5 trading days' }, t2: { deposit: 200, label: 'Up to 11 trading days' }, t3: { deposit: 250, label: 'Up to 22 trading days' } },
+  },
+  settings() {
+    let s = null; try { s = JSON.parse(localStorage.getItem(this.SKEY)); } catch {}
+    const d = this.DEFAULTS;
+    return Object.assign({}, d, s || {}, { tiers: Object.assign({}, d.tiers, (s && s.tiers) || {}) });
+  },
+  saveSettings(s) { try { localStorage.setItem(this.SKEY, JSON.stringify(s)); } catch {} },
+  tier(id) {
+    const t = this.settings().tiers[id] || this.DEFAULTS.tiers[id], p = this.PKG[id];
+    return { id, pkg: p.pkg, days: p.days, deposit: Number(t.deposit) || 0, label: t.label };
   },
   seed() {
-    const now = Date.now(), d = (n) => new Date(now - n * 36e5).toISOString();
-    const mk = (id, name, email, phone, acct, tier, status, hrs, key) => {
-      const t = this.TIERS[tier];
-      return { id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true };
+    const now = Date.now(), d = (h) => new Date(now - h * 36e5).toISOString();
+    const mk = (id, name, email, phone, acct, tier, status, hrs, key, extra) => {
+      const t = this.tier(tier);
+      return Object.assign({ id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true }, extra || {});
     };
     return [
       mk('APP-2041', 'Aisyah Rahman', 'aisyah@example.com', '+60123456789', '4821907', 't2', 'pending', 3),
       mk('APP-2038', 'Daniel Lim', 'daniel@example.com', '+60198765432', '4821655', 't3', 'pending', 20),
+      mk('APP-2036', 'Ravi Kumar', 'ravi@example.com', '+60173344556', '4821590', 't1', 'rejected', 30),
       mk('APP-2031', 'Farid Hassan', 'farid@example.com', '+60112223344', '4820871', 't1', 'approved', 52, 'AURX-7K3M-Q9XD'),
+      mk('APP-2012', 'Marcus Lee', 'marcus@example.com', '+60166778899', '4818802', 't3', 'approved', 192, 'AURX-5NHT-2WQE'),
+      mk('APP-1990', 'Nurul Huda', 'nurul@example.com', '+60145566778', '4815531', 't3', 'approved', 480, 'AURX-9PLC-4RBA'),
+      mk('APP-1984', 'Kevin Tan', 'kevin@example.com', '+60187766554', '4814920', 't2', 'approved', 348, 'AURX-3GZV-8MKD'),
+      mk('APP-1977', 'Hakim Zain', 'hakim@example.com', '+60139988776', '4814407', 't2', 'approved', 120, 'AURX-6YQD-7HTN', { suspended: true }),
+      mk('APP-1902', 'Siti Aminah', 'siti@example.com', '+60152233441', '4809115', 't3', 'approved', 960, 'AURX-2KXR-5VWB'),
     ];
   },
   load() {
@@ -414,6 +472,14 @@ const AX = {
     return list;
   },
   save(list) { try { localStorage.setItem(this.KEY, JSON.stringify(list)); } catch {} },
+  logs() { try { return JSON.parse(localStorage.getItem(this.LKEY)) || []; } catch { return []; } },
+  log(text) { const l = this.logs(); l.unshift({ t: new Date().toISOString(), text }); try { localStorage.setItem(this.LKEY, JSON.stringify(l.slice(0, 40))); } catch {} },
+  broadcasts() { try { return JSON.parse(localStorage.getItem(this.BKEY)) || []; } catch { return []; } },
+  saveBroadcasts(l) { try { localStorage.setItem(this.BKEY, JSON.stringify(l.slice(0, 20))); } catch {} },
+  reset() { try { [this.KEY, this.SKEY, this.LKEY, this.BKEY].forEach((k) => localStorage.removeItem(k)); } catch {} },
+  members(list) { return (list || this.load()).filter((a) => a.status === 'approved' && a.key); },
+  daysLeft(a) { return Math.ceil((new Date(a.expires).getTime() - Date.now()) / 864e5); },
+  state(a) { if (a.suspended) return 'suspended'; const d = this.daysLeft(a); return d < 0 ? 'expired' : d <= 7 ? 'expiring' : 'active'; },
   makeKey() {
     const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     const part = () => Array.from({ length: 4 }, () => c[Math.floor(Math.random() * c.length)]).join('');
@@ -436,6 +502,8 @@ const open = (rec) => {
   document.getElementById('signed').textContent = 'SIGNED IN \u2014 ' + rec.pkg.toUpperCase() + ' \u00b7 ' + rec.label.toUpperCase();
   document.getElementById('a-pkg').textContent = rec.pkg + ' \u00b7 ' + rec.days + ' days';
   document.getElementById('a-exp').textContent = AX.fmt(rec.expires);
+  const cfg = AX.settings(), an = document.getElementById('announce');
+  if (cfg.announceOn && cfg.announcement.trim()) { an.innerHTML = '<b>NOTICE</b>'; an.appendChild(document.createTextNode(cfg.announcement.trim())); an.hidden = false; } else an.hidden = true;
   gate.hidden = true; app.hidden = false; window.scrollTo({ top: 0 });
 };
 const demoRec = () => ({ key: DEMO_KEY, pkg: 'Full month', label: 'Up to 22 trading days', days: 30, expires: AX.addDays(new Date().toISOString(), 30) });
@@ -447,6 +515,7 @@ const tryKey = (raw) => {
     if (k === DEMO_KEY) return open(demoRec());
     const rec = (AX.load() || []).find((a) => a.status === 'approved' && a.key && AX.norm(a.key) === k);
     if (!rec) { msg.textContent = 'We do not recognise that key. Approve an application in the demo admin first, or use the demo key.'; return; }
+    if (rec.suspended) { msg.textContent = 'This key is suspended. Please contact support.'; return; }
     if (new Date(rec.expires).getTime() < Date.now()) { msg.textContent = 'That key has expired. Renew on the membership page.'; return; }
     open(rec);
   }, 380);
@@ -463,6 +532,46 @@ document.getElementById('eye').addEventListener('click', (e) => {
 document.getElementById('forgot').addEventListener('click', (e) => { e.preventDefault(); msg.textContent = 'In the live app this asks for your registered email and sends the key back to it.'; });
 document.getElementById('logout').addEventListener('click', (e) => { e.preventDefault(); app.hidden = true; gate.hidden = false; msg.textContent = ''; keyInput.value = ''; window.scrollTo({ top: 0 }); });
 
+
+// ── economic calendar (sample events, shown in MYT) ─────────────────────────
+const CAL = [
+  { d: 0, t: '09:30', cur: 'AUD', imp: 'low',  name: 'Retail Sales m/m',                prev: '0.2%',  fc: '0.3%',  act: '0.4%' },
+  { d: 0, t: '15:00', cur: 'EUR', imp: 'med',  name: 'German Ifo Business Climate',      prev: '87.4',  fc: '87.8',  act: '88.1' },
+  { d: 0, t: '20:30', cur: 'USD', imp: 'high', name: 'Core PCE Price Index m/m',         prev: '0.2%',  fc: '0.3%',  act: '0.3%' },
+  { d: 0, t: '22:00', cur: 'USD', imp: 'low',  name: 'UoM Consumer Sentiment (final)',   prev: '68.9',  fc: '69.2',  act: '—' },
+  { d: 1, t: '02:00', cur: 'USD', imp: 'med',  name: 'FOMC Member Speaks',               prev: '—', fc: '—', act: '—' },
+  { d: 1, t: '09:30', cur: 'CNY', imp: 'med',  name: 'Manufacturing PMI',                prev: '49.8',  fc: '50.0',  act: '—' },
+  { d: 1, t: '17:00', cur: 'EUR', imp: 'high', name: 'CPI Flash Estimate y/y',           prev: '2.1%',  fc: '2.0%',  act: '—' },
+  { d: 1, t: '21:15', cur: 'USD', imp: 'high', name: 'ADP Non-Farm Employment Change',   prev: '143K',  fc: '150K',  act: '—' },
+  { d: 2, t: '20:30', cur: 'USD', imp: 'high', name: 'Non-Farm Employment Change',       prev: '159K',  fc: '165K',  act: '—' },
+  { d: 2, t: '20:30', cur: 'USD', imp: 'high', name: 'Unemployment Rate',                prev: '4.2%',  fc: '4.2%',  act: '—' },
+  { d: 2, t: '22:00', cur: 'USD', imp: 'med',  name: 'ISM Services PMI',                 prev: '51.7',  fc: '52.0',  act: '—' },
+];
+const IMPLABEL = { high: 'High', med: 'Medium', low: 'Low' };
+let calFilter = 'all';
+// "today" in Malaysia time, whatever the viewer's own timezone is
+const mytNow = () => new Date(Date.now() + (8 * 60 + new Date().getTimezoneOffset()) * 60000);
+const renderCal = () => {
+  const now = mytNow();
+  const days = [0, 1, 2].map((off) => {
+    const day = new Date(now); day.setDate(now.getDate() + off);
+    const label = (off === 0 ? 'Today' : off === 1 ? 'Tomorrow' : day.toLocaleDateString('en-GB', { weekday: 'long' })) + ' · ' + day.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' });
+    const rows = CAL.filter((e) => e.d === off && (calFilter === 'all' || e.imp === calFilter));
+    return { label, rows, day };
+  }).filter((g) => g.rows.length);
+  document.getElementById('cal-body').innerHTML = days.length ? days.map((g) => '<div class="cal-day"><h3>' + g.label + '</h3>' + g.rows.map((e) => {
+    const past = g.day.toDateString() === now.toDateString() && (Number(e.t.slice(0, 2)) * 60 + Number(e.t.slice(3)) <= now.getHours() * 60 + now.getMinutes());
+    const act = past ? e.act : '—';
+    return '<div class="cal-row"><span class="cal-time">' + e.t + '</span><span class="cal-cur' + (e.cur === 'USD' ? ' usd' : '') + '">' + e.cur + '</span>'
+      + '<div class="cal-name"><b>' + e.name + '</b><span class="imp ' + e.imp + '"><i></i><i></i><i></i><span>' + IMPLABEL[e.imp].toUpperCase() + ' IMPACT</span></span></div>'
+      + '<div class="cal-vals"><div><b>PREV</b><span>' + e.prev + '</span></div><div><b>FCST</b><span>' + e.fc + '</span></div><div><b>ACTUAL</b><span class="act">' + act + '</span></div></div></div>';
+  }).join('') + '</div>').join('') : '<p class="cal-empty">No events with this impact in the next three days.</p>';
+};
+document.querySelectorAll('[data-imp]').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('[data-imp]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  calFilter = b.dataset.imp; renderCal();
+}));
+renderCal();
 
 // ── chart (TradingView Lightweight Charts, vendored in /assets) ──────────────
 let chart = null, series = null, lastCandle = null, tick = null;

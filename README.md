@@ -6,17 +6,17 @@ Static design mockup for the AurumX brand, in the same design as `tbwndemo` (dar
 |---|---|
 | `/` | Landing page |
 | `/membership/` | Partner-broker membership application (dummy) |
-| `/admin/` | Demo admin: review and approve applications |
+| `/admin/` | Demo admin console: Overview, Applications, Members, Broadcast, Settings (all on sample data) |
 | `/access/` | Member log-in and dashboard with sample data: Signal, Chart, Stats, Planner, Account |
 | `/support/`, `/terms/`, `/privacy/` | Placeholder legal and support pages |
 
 ## How the demo flow works
 
 1. Apply on `/membership/`. The e-mail code in this demo is always `123456`.
-2. Open `/admin/` and approve the application. A key like `AURX-XXXX-XXXX` is issued ("emailed" is simulated).
+2. Open `/admin/` (Applications tab) and approve the application. A key like `AURX-XXXX-XXXX` is issued ("emailed" is simulated).
 3. Log in on `/access/` with that key. `AURX-DEMO-2026` always works.
 
-Applications live in the browser's `localStorage` only (key `aurumx_demo_apps_v1`), so nothing is sent or stored anywhere. Clear it with "Reset the demo data" on the admin page.
+Everything lives in the browser's `localStorage` only (`aurumx_demo_apps_v1`, `_settings_v1`, `_log_v1`, `_bc_v1`), so nothing is sent or stored anywhere. Admin Settings really change the other pages: the partner code, the deposit tiers and the e-mail-verification switch show on `/membership/`, and the dashboard notice shows on `/access/`. Paused keys are refused at log-in. "Reset all demo data" on the Settings tab clears it.
 
 ## Placeholders to replace
 

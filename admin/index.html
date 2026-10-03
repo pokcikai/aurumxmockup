@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <meta name="description" content="AurumX demo admin: review membership applications and approve them.">
+  <meta name="description" content="AurumX demo admin: applications, members, broadcasts and settings, on sample data.">
   <meta name="theme-color" content="#0e0e0e">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AurumX">
   <meta property="og:title" content="Admin — AurumX demo">
-  <meta property="og:description" content="AurumX demo admin: review membership applications and approve them.">
+  <meta property="og:description" content="AurumX demo admin: applications, members, broadcasts and settings, on sample data.">
   <meta property="og:image" content="https://aurumxmockup.vercel.app/assets/og-card.png">
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
   <meta property="og:image:alt" content="AurumX share card: gold signals with a plan behind them, two phones showing the signal and risk planner screens, and a Become a member button">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Admin — AurumX demo">
-  <meta name="twitter:description" content="AurumX demo admin: review membership applications and approve them.">
+  <meta name="twitter:description" content="AurumX demo admin: applications, members, broadcasts and settings, on sample data.">
   <meta name="twitter:image" content="https://aurumxmockup.vercel.app/assets/og-card.png">
   <meta name="twitter:image:alt" content="AurumX share card: gold signals with a plan behind them, two phones showing the signal and risk planner screens, and a Become a member button">
   <link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png">
@@ -28,9 +28,100 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Newsreader:ital@0;1&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="../assets/site.css">
+<style>
+
+.console{margin-top:46px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0c0c0b}
+.console-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 20px;border-bottom:1px solid var(--line);font:400 10px DM Mono,monospace;letter-spacing:.08em;color:#9b9d93}
+.console-top b{display:flex;align-items:center;gap:9px;font:600 13px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;color:#efece3}
+.console-top b i{width:7px;height:7px;border-radius:50%;background:#3ddc97;box-shadow:0 0 0 4px rgba(61,220,151,.16)}
+.tabs{display:flex;gap:8px;padding:14px 20px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{white-space:nowrap;background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 17px;font:500 10px DM Mono,monospace;letter-spacing:.08em;text-transform:uppercase;color:#a9aba1;cursor:pointer}
+.tabs button[aria-selected=true]{background:#d4a843;border-color:#d4a843;color:#17150f}
+.tabs .short{display:none}
+.tabs .count{margin-left:7px;border-radius:999px;background:#e0644f;color:#fff;padding:2px 6px;font-size:9px;letter-spacing:0}
+.panel{display:none;padding:30px 24px 38px}
+.panel.open{display:block}
+.panel-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.panel-head>div>span{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.panel-head h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;letter-spacing:-.035em;font-weight:600;margin:10px 0 0}
+.blurb{margin:14px 0 0;max-width:64ch;color:#a9aba1;font-size:14px;line-height:1.65}
+.blurb b{color:#efece3;font-weight:600}
+.tf{display:flex;gap:6px;flex-wrap:wrap}
+.tf button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font:500 10px DM Mono,monospace;letter-spacing:.08em;color:#a9aba1;cursor:pointer}
+.tf button[aria-pressed=true]{background:#d4a843;border-color:#d4a843;color:#17150f}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:10px;margin-top:26px;overflow:hidden}
+.stats4 article{padding:22px 20px;border-right:1px solid var(--line)}
+.stats4 article:last-child{border-right:0}
+.stats4 b{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.stats4 strong{display:block;margin-top:10px;font:600 34px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.04em}
+.stats4 strong.warn{color:#e2bf72}
+.stats4 strong.bad{color:#e0644f}
+.stats4 strong.good{color:#3ddc97}
+.two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;margin-top:34px}
+.box{border:1px solid var(--line);border-radius:10px;background:#0f0f0e;padding:22px}
+.box h3{margin:0 0 6px;font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1;text-transform:uppercase}
+.todo{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:14px;color:#c9cbc2}
+.todo:last-child{border-bottom:0}
+.todo b{color:#efece3;font-weight:600}
+.todo small{display:block;margin-top:3px;font:400 11px DM Mono,monospace;color:#8b8d84}
+.mini-btn{border-radius:6px;padding:9px 13px;font:500 10px DM Mono,monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;background:transparent;color:#efece3;border:1px solid var(--line);white-space:nowrap}
+.mini-btn:hover{border-color:#d4a843}
+.mini-btn.ok{background:#d4a843;border-color:#d4a843;color:#17150f}
+.mini-btn.danger:hover{border-color:#e0644f;color:#e0644f}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:34px}
+.cards button{text-align:left;border:1px solid var(--line);border-radius:10px;background:transparent;padding:20px;color:#efece3;cursor:pointer;font:inherit}
+.cards button:hover{border-color:rgba(212,168,67,.6)}
+.cards b{display:block;font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#d8b45c}
+.cards strong{display:block;margin-top:10px;font:600 17px 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em}
+.cards span{display:block;margin-top:8px;font-size:13.5px;line-height:1.6;color:#a9aba1}
+.log div{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:13.5px;color:#c9cbc2}
+.log div:last-child{border-bottom:0}
+.log time{font:400 11px DM Mono,monospace;color:#8b8d84;padding-top:2px}
+.search{margin-top:22px}
+.search input{width:100%;max-width:380px;background:#0b0b0a;border:1px solid var(--line);border-radius:6px;padding:12px 14px;color:#efece3;font:400 15px 'DM Sans',sans-serif}
+.search input:focus{outline:none;border-color:#d4a843}
+.pill.active{border-color:rgba(61,220,151,.5);color:#3ddc97}
+.pill.expiring{border-color:rgba(212,168,67,.5);color:#e2bf72}
+.pill.expired{border-color:rgba(224,100,79,.5);color:#e0644f}
+.pill.suspended{border-color:rgba(169,171,162,.5);color:#a9aba1}
+.keycell{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.keycell button{background:transparent;border:0;color:#d8b45c;font:500 10px DM Mono,monospace;letter-spacing:.08em;cursor:pointer;padding:6px 4px;text-transform:uppercase}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:28px;align-items:start}
+.radio-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.radio-row label{position:relative;display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:500 11px DM Mono,monospace;letter-spacing:.06em;text-transform:uppercase;color:#a9aba1;cursor:pointer}
+.radio-row input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.radio-row label:has(input:checked){border-color:#d4a843;background:rgba(212,168,67,.1);color:#f0dcae}
+textarea{width:100%;min-height:104px;resize:vertical;background:#0b0b0a;border:1px solid var(--line);border-radius:6px;padding:14px 15px;color:#efece3;font:400 15px/1.55 'DM Sans',sans-serif}
+textarea:focus,.field select:focus{outline:none;border-color:#d4a843}
+.count-hint{margin-top:6px;font:400 11px DM Mono,monospace;color:#8b8d84;text-align:right}
+.notif{border:1px solid var(--line);border-radius:14px;background:#161614;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;max-width:420px}
+.notif img{width:36px;height:27px;object-fit:contain;flex:none;margin-top:2px}
+.notif b{display:block;font:600 14px 'Plus Jakarta Sans',sans-serif;color:#efece3;letter-spacing:-.01em}
+.notif span{display:block;margin-top:3px;font-size:13px;line-height:1.5;color:#b6b8af;word-break:break-word}
+.notif small{display:block;margin-top:6px;font:400 10px DM Mono,monospace;color:#8b8d84}
+.preview-label{margin:0 0 12px;font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1;text-transform:uppercase}
+.tier-edit{display:grid;grid-template-columns:90px 120px 1fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.tier-edit:last-child{border-bottom:0}
+.tier-edit b{font:500 10px DM Mono,monospace;letter-spacing:.1em;color:#a9aba1}
+.tier-edit input{width:100%;background:#0b0b0a;border:1px solid var(--line);border-radius:6px;padding:11px 12px;color:#efece3;font:400 15px 'DM Sans',sans-serif}
+.tier-edit input:focus{outline:none;border-color:#d4a843}
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:18px;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.switch-row p{margin:0;font-size:13px;color:#a9aba1;max-width:440px}
+.switch{position:relative;width:52px;height:28px;border-radius:999px;background:#24241f;border:1px solid var(--line);cursor:pointer;flex:none}
+.switch:after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#9b9d93;transition:.18s}
+.switch[aria-checked=true]{background:rgba(61,220,151,.2);border-color:rgba(61,220,151,.55)}
+.switch[aria-checked=true]:after{left:27px;background:#3ddc97}
+.bc-hist td small{display:block}
+.save-bar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:30px}
+.save-bar .btn-gold{width:auto;margin:0;padding:15px 26px}
+.guide{margin-top:34px}
+@media(max-width:900px){.stats4{grid-template-columns:1fr 1fr}.stats4 article:nth-child(2){border-right:0}.stats4 article:nth-child(-n+2){border-bottom:1px solid var(--line)}.two-col,.form-grid,.cards{grid-template-columns:1fr}}
+@media(max-width:600px){.console-top{flex-direction:column;align-items:flex-start;gap:8px}.tabs{gap:4px;padding:12px 8px}.tabs button{padding:9px 8px;letter-spacing:0}.tabs .long{display:none}.tabs .short{display:inline}.panel{padding:24px 15px 30px}.panel-head h2{font-size:22px}.tier-edit{grid-template-columns:1fr 1fr}.tier-edit b{grid-column:1/-1}.log div{grid-template-columns:1fr;gap:3px}.stats4 strong{font-size:28px}.mini-btn,.pill,.cards b,.console-top span,.panel-head>div>span,.tf button,.stats4 b,.box h3{font-size:11px}}
+
+</style>
 </head>
 <body>
-  <div class="demo-strip"><b>DEMO</b> <span>Demo admin &mdash; no login, data stays in this browser, nothing is emailed.</span></div>
+  <div class="demo-strip"><b>DEMO</b> <span>Demo admin &mdash; no login, sample data, nothing is e-mailed or sent.</span></div>
   <header class="site-header">
     <a class="brand" href="../" aria-label="AurumX home"><img src="../assets/logo-wordmark.webp" width="420" height="134" alt="AurumX"></a>
     <nav aria-label="Main navigation">
@@ -46,50 +137,154 @@
     <div class="page-head">
       <div>
         <div class="eyebrow"><i></i> ADMIN / DEMO</div>
-        <h1>REVIEW<br><em>APPLICATIONS.</em></h1>
+        <h1>RUN THE<br><em>MEMBERSHIP.</em></h1>
       </div>
-      <p>Where an admin checks each application against the broker's partner report and approves it. Approving issues a key and "emails" it. There is no login in this demo, and the list lives in this browser only.</p>
+      <p>This is what you, the owner, use every day: check applications, look after members, message them, and change the settings. Everything here works on sample data, and what you change really changes the membership page and the member dashboard.</p>
     </div>
 
-    <div class="stats3">
-      <article><b>PENDING</b><strong id="n-pending">0</strong></article>
-      <article><b>APPROVED</b><strong id="n-approved">0</strong></article>
-      <article><b>REJECTED</b><strong id="n-rejected">0</strong></article>
-    </div>
+    <div class="console">
+      <div class="console-top"><b><i></i>AURUMX &middot; ADMIN</b><span>DEMO &middot; NO LOGIN &middot; DATA STAYS IN THIS BROWSER</span></div>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="overview"><span class="long">Overview</span><span class="short">Home</span></button>
+        <button role="tab" aria-selected="false" data-tab="applications"><span class="long">Applications</span><span class="short">Apps</span><span class="count" id="tab-pending" hidden>0</span></button>
+        <button role="tab" aria-selected="false" data-tab="members">Members</button>
+        <button role="tab" aria-selected="false" data-tab="broadcast"><span class="long">Broadcast</span><span class="short">Send</span></button>
+        <button role="tab" aria-selected="false" data-tab="settings"><span class="long">Settings</span><span class="short">Setup</span></button>
+      </div>
 
-    <div class="apps-wrap">
-      <table class="apps">
-        <thead><tr><th>APPLIED</th><th>MEMBER</th><th>BROKER ACCOUNT</th><th>TIER</th><th>STATUS</th><th>ACTION</th></tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
+      <!-- Overview -->
+      <div class="panel open" data-panel="overview">
+        <div class="panel-head"><div><span>OVERVIEW</span><h2>Today at a glance</h2></div></div>
+        <p class="blurb">The first screen you open. It shows what needs you today and the numbers behind the business, so nothing slips: an application waiting for a decision, or a member whose key is about to end.</p>
+        <div class="stats4">
+          <article><b>WAITING FOR YOU</b><strong class="warn" id="o-pending">0</strong></article>
+          <article><b>ACTIVE MEMBERS</b><strong class="good" id="o-active">0</strong></article>
+          <article><b>ENDING IN 7 DAYS</b><strong class="warn" id="o-expiring">0</strong></article>
+          <article><b>EXPIRED</b><strong class="bad" id="o-expired">0</strong></article>
+        </div>
+        <div class="two-col">
+          <div class="box"><h3>Needs your attention</h3><div id="o-todo"></div></div>
+          <div class="box"><h3>Recent activity</h3><div class="log" id="o-log"></div></div>
+        </div>
+        <div class="cards guide">
+          <button type="button" data-go="applications"><b>APPLICATIONS</b><strong>Check and approve</strong><span>Each new member applies with their broker account number. You check it, then approve. Approving issues the key and e-mails it.</span></button>
+          <button type="button" data-go="members"><b>MEMBERS</b><strong>Look after members</strong><span>See every member and when their key ends. Extend a key, pause it, or send the key again if they lose it.</span></button>
+          <button type="button" data-go="broadcast"><b>BROADCAST</b><strong>Message your members</strong><span>Send a push notification or an e-mail to everyone, only those ending soon, or only expired members.</span></button>
+          <button type="button" data-go="settings"><b>SETTINGS</b><strong>Change how it works</strong><span>Your partner broker link and code, the deposit tiers, e-mail verification, and a notice shown inside the member dashboard.</span></button>
+        </div>
+      </div>
+
+      <!-- Applications -->
+      <div class="panel" data-panel="applications">
+        <div class="panel-head">
+          <div><span>APPLICATIONS</span><h2>New members, waiting for a decision</h2></div>
+          <div class="tf" role="group" aria-label="Status filter">
+            <button type="button" data-app="pending" aria-pressed="true">Pending</button>
+            <button type="button" data-app="approved" aria-pressed="false">Approved</button>
+            <button type="button" data-app="rejected" aria-pressed="false">Rejected</button>
+            <button type="button" data-app="all" aria-pressed="false">All</button>
+          </div>
+        </div>
+        <p class="blurb">Compare the <b>broker account number</b> and deposit against the broker's partner report. <b>Approve</b> issues a key and e-mails it to the member. <b>Reject</b> sends nothing. Every action is recorded in the activity log.</p>
+        <div class="apps-wrap"><table class="apps"><thead><tr><th>APPLIED</th><th>MEMBER</th><th>BROKER ACCOUNT</th><th>TIER</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="rows"></tbody></table></div>
+        <p class="note">Try it: apply on <a href="../membership/" style="color:#d8b45c;border-bottom:1px solid rgba(212,168,67,.45)">the membership page</a>, then come back and approve it.</p>
+      </div>
+
+      <!-- Members -->
+      <div class="panel" data-panel="members">
+        <div class="panel-head"><div><span>MEMBERS</span><h2>Everyone with a key</h2></div></div>
+        <p class="blurb">Every approved member and where their key stands. <b>Extend</b> adds days to what is left (a renewal, or a goodwill gift). <b>Pause</b> switches a key off without deleting it, and <b>Resume</b> turns it back on. <b>Resend</b> e-mails the key again.</p>
+        <div class="search"><input id="q" type="search" placeholder="Search name, e-mail or key" aria-label="Search members"></div>
+        <div class="apps-wrap"><table class="apps"><thead><tr><th>MEMBER</th><th>PACKAGE</th><th>KEY ENDS</th><th>STATUS</th><th>KEY</th><th>ACTIONS</th></tr></thead><tbody id="mrows"></tbody></table></div>
+      </div>
+
+      <!-- Broadcast -->
+      <div class="panel" data-panel="broadcast">
+        <div class="panel-head"><div><span>BROADCAST</span><h2>Send a message to members</h2></div></div>
+        <p class="blurb">Reach members on their phone or in their inbox: a market notice, a maintenance heads-up, or a gentle renewal reminder. Choose who gets it, check the preview, and send. Nothing is really sent in this demo.</p>
+        <div class="form-grid">
+          <form id="bc-form" novalidate>
+            <div class="field" style="margin-top:0"><label>Channel</label>
+              <div class="radio-row"><label><input type="radio" name="ch" value="Push notification" checked>Push notification</label><label><input type="radio" name="ch" value="E-mail">E-mail</label></div></div>
+            <div class="field"><label for="aud">Who receives it</label>
+              <select id="aud"><option value="active">All active members</option><option value="expiring">Ending within 7 days</option><option value="expired">Expired members</option></select>
+              <small class="hint" id="aud-hint"></small></div>
+            <div class="field"><label for="bc-title">Title</label><input id="bc-title" maxlength="60" placeholder="e.g. Gold is moving: US data at 20:30" value="Heads-up: US data at 20:30 MYT"></div>
+            <div class="field"><label for="bc-msg">Message</label><textarea id="bc-msg" maxlength="200" placeholder="Write the message">Core PCE is out at 20:30 MYT. Expect fast moves in XAUUSD. Review your risk before the release.</textarea><div class="count-hint" id="bc-count">0 / 200</div></div>
+            <button class="btn-gold" type="submit">Send broadcast <span>&rarr;</span></button>
+          </form>
+          <div>
+            <p class="preview-label">Preview on a member's phone</p>
+            <div class="notif"><img src="../assets/logo-emblem.webp" alt=""><div><b id="pv-title"></b><span id="pv-msg"></span><small>AurumX &middot; now</small></div></div>
+          </div>
+        </div>
+        <div class="guide"><div class="box" style="padding:0"><div style="padding:22px 22px 6px"><h3>Sent so far</h3></div>
+          <div class="apps-wrap" style="margin:0;border:0;border-top:1px solid var(--line);border-radius:0"><table class="apps bc-hist"><thead><tr><th>SENT</th><th>CHANNEL</th><th>TO</th><th>MESSAGE</th><th>REACHED</th></tr></thead><tbody id="bc-rows"></tbody></table></div></div></div>
+      </div>
+
+      <!-- Settings -->
+      <div class="panel" data-panel="settings">
+        <div class="panel-head"><div><span>SETTINGS</span><h2>Change how membership works</h2></div></div>
+        <p class="blurb">These switches change the real behaviour of this demo. Save, then open <a href="../membership/" style="color:#d8b45c;border-bottom:1px solid rgba(212,168,67,.45)">the membership page</a> or <a href="../access/" style="color:#d8b45c;border-bottom:1px solid rgba(212,168,67,.45)">the member dashboard</a> to see the result.</p>
+        <div class="form-grid">
+          <div>
+            <div class="box"><h3>Partner broker</h3>
+              <div class="field" style="margin-top:10px"><label for="s-code">Partner code</label><input class="mono" id="s-code" autocomplete="off"></div>
+              <div class="field"><label for="s-link">Partner link</label><input id="s-link" type="url" autocomplete="off" placeholder="https://"></div>
+              <small class="hint" style="display:block;margin-top:10px;color:#9b9d93;font-size:12px">Members see this on the membership page. They must open their account with it.</small></div>
+            <div class="switch-row"><div><strong style="font:600 15px 'Plus Jakarta Sans',sans-serif">E-mail verification</strong><p>Members confirm their e-mail with a 6-digit code before they can apply.</p></div><div class="switch" role="switch" aria-checked="true" tabindex="0" id="s-otp" aria-label="E-mail verification"></div></div>
+          </div>
+          <div>
+            <div class="box"><h3>Deposit tiers</h3>
+              <div class="tier-edit"><b>STARTER</b><input id="d1" type="number" min="1" aria-label="Starter deposit"><input id="l1" aria-label="Starter label"></div>
+              <div class="tier-edit"><b>STANDARD</b><input id="d2" type="number" min="1" aria-label="Standard deposit"><input id="l2" aria-label="Standard label"></div>
+              <div class="tier-edit"><b>FULL MONTH</b><input id="d3" type="number" min="1" aria-label="Full month deposit"><input id="l3" aria-label="Full month label"></div>
+              <small class="hint" style="display:block;margin-top:10px;color:#9b9d93;font-size:12px">The amount a member deposits, and what they are told they get. A key still runs 7, 15 or 30 calendar days.</small></div>
+            <div class="box" style="margin-top:18px"><h3>Notice inside the member dashboard</h3>
+              <div class="field" style="margin-top:10px"><textarea id="s-note" maxlength="160" placeholder="e.g. The market is closed on Monday for a US holiday." aria-label="Dashboard notice"></textarea></div>
+              <div class="switch-row" style="margin-top:12px;border:0;padding:0"><p>Show this notice at the top of the dashboard.</p><div class="switch" role="switch" aria-checked="false" tabindex="0" id="s-noteon" aria-label="Show notice"></div></div></div>
+          </div>
+        </div>
+        <div class="save-bar"><button class="btn-gold" type="button" id="save">Save settings</button><a href="#" id="reset" class="note" style="margin:0;color:#d8b45c">Reset all demo data</a></div>
+      </div>
     </div>
-    <div class="inline-links" style="margin-top:22px">
-      <a href="#" id="reset">Reset the demo data</a>
-      <a href="../membership/">New application &rarr;</a>
-      <a href="../access/">Member log in &rarr;</a>
-    </div>
-    <p class="note">The first three rows are sample data. A real application sent from the membership page appears at the top.</p>
   </main>
   <div class="toast" id="toast" hidden></div>
   <footer><a class="brand" href="../" aria-label="AurumX home"><img src="../assets/logo-wordmark.webp" width="420" height="134" alt="AurumX"></a><p>Structured XAUUSD setups. You make the decision.</p><div><a href="../#transparency">Risk disclosure</a><a href="../membership/">Membership</a><a href="../access/">Member log in</a><a href="../support/">Support</a><a href="../terms/">Terms</a><a href="../privacy/">Privacy</a></div><small>&copy; 2026 AurumX. Trading involves risk. Past results are not a promise of future ones.</small></footer>
 <script>
 const AX = {
-  KEY: 'aurumx_demo_apps_v1',
-  TIERS: {
-    t1: { deposit: 100, label: '5 trading days', pkg: 'Starter', days: 7 },
-    t2: { deposit: 200, label: 'Up to 11 trading days', pkg: 'Standard', days: 15 },
-    t3: { deposit: 250, label: 'Up to 22 trading days', pkg: 'Full month', days: 30 },
+  KEY: 'aurumx_demo_apps_v1', SKEY: 'aurumx_demo_settings_v1', LKEY: 'aurumx_demo_log_v1', BKEY: 'aurumx_demo_bc_v1',
+  PKG: { t1: { pkg: 'Starter', days: 7 }, t2: { pkg: 'Standard', days: 15 }, t3: { pkg: 'Full month', days: 30 } },
+  DEFAULTS: {
+    partnerCode: 'AURUMX-0000', partnerLink: 'https://broker.example/aurumx', otp: true, announcement: '', announceOn: false,
+    tiers: { t1: { deposit: 100, label: '5 trading days' }, t2: { deposit: 200, label: 'Up to 11 trading days' }, t3: { deposit: 250, label: 'Up to 22 trading days' } },
+  },
+  settings() {
+    let s = null; try { s = JSON.parse(localStorage.getItem(this.SKEY)); } catch {}
+    const d = this.DEFAULTS;
+    return Object.assign({}, d, s || {}, { tiers: Object.assign({}, d.tiers, (s && s.tiers) || {}) });
+  },
+  saveSettings(s) { try { localStorage.setItem(this.SKEY, JSON.stringify(s)); } catch {} },
+  tier(id) {
+    const t = this.settings().tiers[id] || this.DEFAULTS.tiers[id], p = this.PKG[id];
+    return { id, pkg: p.pkg, days: p.days, deposit: Number(t.deposit) || 0, label: t.label };
   },
   seed() {
-    const now = Date.now(), d = (n) => new Date(now - n * 36e5).toISOString();
-    const mk = (id, name, email, phone, acct, tier, status, hrs, key) => {
-      const t = this.TIERS[tier];
-      return { id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true };
+    const now = Date.now(), d = (h) => new Date(now - h * 36e5).toISOString();
+    const mk = (id, name, email, phone, acct, tier, status, hrs, key, extra) => {
+      const t = this.tier(tier);
+      return Object.assign({ id, name, email, phone, acct, tier, pkg: t.pkg, label: t.label, deposit: t.deposit, days: t.days, created: d(hrs), status, key: key || null, expires: key ? this.addDays(d(hrs - 2), t.days) : null, sample: true }, extra || {});
     };
     return [
       mk('APP-2041', 'Aisyah Rahman', 'aisyah@example.com', '+60123456789', '4821907', 't2', 'pending', 3),
       mk('APP-2038', 'Daniel Lim', 'daniel@example.com', '+60198765432', '4821655', 't3', 'pending', 20),
+      mk('APP-2036', 'Ravi Kumar', 'ravi@example.com', '+60173344556', '4821590', 't1', 'rejected', 30),
       mk('APP-2031', 'Farid Hassan', 'farid@example.com', '+60112223344', '4820871', 't1', 'approved', 52, 'AURX-7K3M-Q9XD'),
+      mk('APP-2012', 'Marcus Lee', 'marcus@example.com', '+60166778899', '4818802', 't3', 'approved', 192, 'AURX-5NHT-2WQE'),
+      mk('APP-1990', 'Nurul Huda', 'nurul@example.com', '+60145566778', '4815531', 't3', 'approved', 480, 'AURX-9PLC-4RBA'),
+      mk('APP-1984', 'Kevin Tan', 'kevin@example.com', '+60187766554', '4814920', 't2', 'approved', 348, 'AURX-3GZV-8MKD'),
+      mk('APP-1977', 'Hakim Zain', 'hakim@example.com', '+60139988776', '4814407', 't2', 'approved', 120, 'AURX-6YQD-7HTN', { suspended: true }),
+      mk('APP-1902', 'Siti Aminah', 'siti@example.com', '+60152233441', '4809115', 't3', 'approved', 960, 'AURX-2KXR-5VWB'),
     ];
   },
   load() {
@@ -99,6 +294,14 @@ const AX = {
     return list;
   },
   save(list) { try { localStorage.setItem(this.KEY, JSON.stringify(list)); } catch {} },
+  logs() { try { return JSON.parse(localStorage.getItem(this.LKEY)) || []; } catch { return []; } },
+  log(text) { const l = this.logs(); l.unshift({ t: new Date().toISOString(), text }); try { localStorage.setItem(this.LKEY, JSON.stringify(l.slice(0, 40))); } catch {} },
+  broadcasts() { try { return JSON.parse(localStorage.getItem(this.BKEY)) || []; } catch { return []; } },
+  saveBroadcasts(l) { try { localStorage.setItem(this.BKEY, JSON.stringify(l.slice(0, 20))); } catch {} },
+  reset() { try { [this.KEY, this.SKEY, this.LKEY, this.BKEY].forEach((k) => localStorage.removeItem(k)); } catch {} },
+  members(list) { return (list || this.load()).filter((a) => a.status === 'approved' && a.key); },
+  daysLeft(a) { return Math.ceil((new Date(a.expires).getTime() - Date.now()) / 864e5); },
+  state(a) { if (a.suspended) return 'suspended'; const d = this.daysLeft(a); return d < 0 ? 'expired' : d <= 7 ? 'expiring' : 'active'; },
   makeKey() {
     const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     const part = () => Array.from({ length: 4 }, () => c[Math.floor(Math.random() * c.length)]).join('');
@@ -112,35 +315,113 @@ const AX = {
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 let list = AX.load();
-
+let appFilter = 'pending';
 const toast = (t) => { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => { el.hidden = true; }, 5200); };
-const render = () => {
-  const by = (s) => list.filter((a) => a.status === s).length;
-  $('n-pending').textContent = by('pending'); $('n-approved').textContent = by('approved'); $('n-rejected').textContent = by('rejected');
-  $('rows').innerHTML = list.length ? list.map((a) => {
+const ago = (iso) => { const m = Math.max(1, Math.round((Date.now() - new Date(iso)) / 6e4)); return m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' d ago'; };
+const goTab = (name) => { document.querySelectorAll('.tabs button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name))); document.querySelectorAll('.panel').forEach((p) => p.classList.toggle('open', p.dataset.panel === name)); };
+const groups = () => { const m = AX.members(list); const by = (s) => m.filter((a) => AX.state(a) === s); return { m, active: by('active'), expiring: by('expiring'), expired: by('expired'), suspended: by('suspended') }; };
+const commit = (msg) => { AX.save(list); if (msg) AX.log(msg); renderAll(); };
+
+const renderOverview = () => {
+  const g = groups(), pending = list.filter((a) => a.status === 'pending');
+  $('o-pending').textContent = pending.length; $('o-active').textContent = g.active.length + g.expiring.length;
+  $('o-expiring').textContent = g.expiring.length; $('o-expired').textContent = g.expired.length;
+  const tab = $('tab-pending'); tab.textContent = pending.length; tab.hidden = !pending.length;
+  const todo = [];
+  if (pending.length) todo.push('<div class="todo"><div><b>' + pending.length + ' application' + (pending.length > 1 ? 's' : '') + ' waiting</b><small>' + esc(pending.map((a) => a.name).join(', ')) + '</small></div><button class="mini-btn ok" data-go="applications">Review</button></div>');
+  g.expiring.forEach((a) => todo.push('<div class="todo"><div><b>' + esc(a.name) + '</b><small>key ends ' + (AX.daysLeft(a) <= 0 ? 'today' : 'in ' + AX.daysLeft(a) + ' day' + (AX.daysLeft(a) > 1 ? 's' : '')) + '</small></div><button class="mini-btn" data-extend="' + a.id + '" data-days="' + a.days + '">Extend ' + a.days + 'd</button></div>'));
+  $('o-todo').innerHTML = todo.join('') || '<div class="todo"><div><b>All clear</b><small>Nothing needs you right now.</small></div></div>';
+  const logs = AX.logs().slice(0, 7);
+  $('o-log').innerHTML = logs.length ? logs.map((l) => '<div><time>' + ago(l.t) + '</time><span>' + esc(l.text) + '</span></div>').join('') : '<div style="grid-template-columns:1fr"><span>No activity yet. Approve an application and it appears here.</span></div>';
+};
+const renderApps = () => {
+  const rows = list.filter((a) => appFilter === 'all' || a.status === appFilter);
+  $('rows').innerHTML = rows.length ? rows.map((a) => {
     const act = a.status === 'pending'
       ? '<div class="row-actions"><button class="ok" data-act="approve" data-id="' + a.id + '">Approve</button><button data-act="reject" data-id="' + a.id + '">Reject</button></div>'
-      : a.status === 'approved'
-        ? '<code>' + esc(a.key) + '</code><small>expires ' + AX.fmt(a.expires) + '</small>'
-        : '<small>No key issued</small>';
+      : a.status === 'approved' ? '<code>' + esc(a.key) + '</code><small>ends ' + AX.fmt(a.expires) + '</small>' : '<small>No key issued</small>';
     return '<tr><td>' + AX.fmt(a.created) + '<small>' + esc(a.id) + (a.sample ? ' &middot; sample' : '') + '</small></td>'
       + '<td><b>' + esc(a.name) + '</b><small>' + esc(a.email) + '</small><small>' + esc(a.phone) + '</small></td>'
       + '<td><code>' + esc(a.acct) + '</code><small>deposit $' + a.deposit + '</small></td>'
       + '<td><b>' + esc(a.pkg) + '</b><small>' + esc(a.label) + '</small></td>'
       + '<td><span class="pill ' + a.status + '">' + a.status + '</span></td><td>' + act + '</td></tr>';
-  }).join('') : '<tr><td colspan="6" class="empty">No applications yet.</td></tr>';
+  }).join('') : '<tr><td colspan="6" class="empty">Nothing here.</td></tr>';
 };
-$('rows').addEventListener('click', (e) => {
-  const b = e.target.closest('button[data-act]'); if (!b) return;
-  const a = list.find((x) => x.id === b.dataset.id); if (!a) return;
-  if (b.dataset.act === 'approve') {
-    a.status = 'approved'; a.key = AX.makeKey(); a.expires = AX.addDays(new Date().toISOString(), a.days);
-    toast('Approved. Key ' + a.key + ' "emailed" to ' + a.email + ' (simulated). Use it on the log-in page.');
-  } else { a.status = 'rejected'; toast('Rejected. Nothing was sent (simulated).'); }
-  AX.save(list); render();
+const revealed = new Set();
+const renderMembers = () => {
+  const q = $('q').value.trim().toLowerCase();
+  const m = AX.members(list).filter((a) => !q || (a.name + ' ' + a.email + ' ' + a.key).toLowerCase().includes(q));
+  $('mrows').innerHTML = m.length ? m.map((a) => {
+    const st = AX.state(a), d = AX.daysLeft(a);
+    const when = st === 'expired' ? 'ended ' + Math.abs(d) + ' d ago' : d <= 0 ? 'ends today' : 'in ' + d + ' d';
+    return '<tr><td><b>' + esc(a.name) + '</b><small>' + esc(a.email) + '</small></td><td><b>' + esc(a.pkg) + '</b><small>' + esc(a.label) + '</small></td>'
+      + '<td>' + AX.fmt(a.expires) + '<small>' + when + '</small></td><td><span class="pill ' + st + '">' + st + '</span></td>'
+      + '<td><div class="keycell"><code>' + (revealed.has(a.id) ? esc(a.key) : 'AURX-••••-••••') + '</code><button data-reveal="' + a.id + '">' + (revealed.has(a.id) ? 'Hide' : 'Show') + '</button></div></td>'
+      + '<td><div class="row-actions"><button data-extend="' + a.id + '" data-days="7">+7d</button><button data-extend="' + a.id + '" data-days="30">+30d</button>'
+      + '<button data-pause="' + a.id + '">' + (a.suspended ? 'Resume' : 'Pause') + '</button><button data-resend="' + a.id + '">Resend</button></div></td></tr>';
+  }).join('') : '<tr><td colspan="6" class="empty">No member matches.</td></tr>';
+};
+const AUD = { active: (g) => g.active.concat(g.expiring), expiring: (g) => g.expiring, expired: (g) => g.expired };
+const renderBroadcast = () => {
+  const g = groups(), n = AUD[$('aud').value](g).length;
+  $('aud-hint').textContent = n + ' member' + (n === 1 ? '' : 's') + ' would receive this.';
+  $('pv-title').textContent = $('bc-title').value || 'Your title'; $('pv-msg').textContent = $('bc-msg').value || 'Your message';
+  $('bc-count').textContent = $('bc-msg').value.length + ' / 200';
+  const h = AX.broadcasts();
+  $('bc-rows').innerHTML = h.length ? h.map((b) => '<tr><td>' + ago(b.t) + '</td><td>' + esc(b.ch) + '</td><td>' + esc(b.aud) + '</td><td><b>' + esc(b.title) + '</b><small>' + esc(b.msg) + '</small></td><td>' + b.n + '</td></tr>').join('') : '<tr><td colspan="5" class="empty">Nothing sent yet. Send one above to see it here.</td></tr>';
+};
+const renderSettings = () => {
+  const s = AX.settings();
+  $('s-code').value = s.partnerCode; $('s-link').value = s.partnerLink;
+  ['1', '2', '3'].forEach((n) => { const t = s.tiers['t' + n]; $('d' + n).value = t.deposit; $('l' + n).value = t.label; });
+  $('s-otp').setAttribute('aria-checked', String(!!s.otp)); $('s-note').value = s.announcement; $('s-noteon').setAttribute('aria-checked', String(!!s.announceOn));
+};
+const renderAll = () => { renderOverview(); renderApps(); renderMembers(); renderBroadcast(); };
+
+// ── events ──
+document.querySelectorAll('.tabs button').forEach((b) => b.addEventListener('click', () => goTab(b.dataset.tab)));
+document.addEventListener('click', (e) => {
+  const go = e.target.closest('[data-go]'); if (go) { goTab(go.dataset.go); window.scrollTo({ top: document.querySelector('.console').offsetTop - 90, behavior: 'smooth' }); return; }
+  const act = e.target.closest('button[data-act]');
+  if (act) {
+    const a = list.find((x) => x.id === act.dataset.id); if (!a) return;
+    if (act.dataset.act === 'approve') { a.status = 'approved'; a.key = AX.makeKey(); a.expires = AX.addDays(new Date().toISOString(), a.days); commit('Approved ' + a.name + ' (' + a.pkg + '), key issued'); toast('Approved. Key ' + a.key + ' "emailed" to ' + a.email + ' (simulated). Use it on the log-in page.'); }
+    else { a.status = 'rejected'; commit('Rejected ' + a.name); toast('Rejected. Nothing was sent (simulated).'); }
+    return;
+  }
+  const ext = e.target.closest('[data-extend]');
+  if (ext) { const a = list.find((x) => x.id === ext.dataset.extend); if (!a) return; const base = Math.max(Date.now(), new Date(a.expires).getTime()); a.expires = AX.addDays(new Date(base).toISOString(), Number(ext.dataset.days)); commit('Extended ' + a.name + ' by ' + ext.dataset.days + ' days'); toast(a.name + "'s key now ends " + AX.fmt(a.expires) + '.'); return; }
+  const pz = e.target.closest('[data-pause]');
+  if (pz) { const a = list.find((x) => x.id === pz.dataset.pause); if (!a) return; a.suspended = !a.suspended; commit((a.suspended ? 'Paused ' : 'Resumed ') + a.name + "'s key"); toast(a.suspended ? 'Paused. The key stops working at once, and can be resumed.' : 'Resumed. The key works again.'); return; }
+  const rs = e.target.closest('[data-resend]');
+  if (rs) { const a = list.find((x) => x.id === rs.dataset.resend); if (!a) return; AX.log('Sent the key again to ' + a.name); renderOverview(); toast('Key e-mailed again to ' + a.email + ' (simulated).'); return; }
+  const rv = e.target.closest('[data-reveal]');
+  if (rv) { const id = rv.dataset.reveal; revealed.has(id) ? revealed.delete(id) : revealed.add(id); renderMembers(); }
 });
-$('reset').addEventListener('click', (e) => { e.preventDefault(); list = AX.seed(); AX.save(list); render(); toast('Demo data reset.'); });
-render();
+document.querySelectorAll('[data-app]').forEach((b) => b.addEventListener('click', () => { document.querySelectorAll('[data-app]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); appFilter = b.dataset.app; renderApps(); }));
+$('q').addEventListener('input', renderMembers);
+['aud', 'bc-title', 'bc-msg'].forEach((id) => $(id).addEventListener('input', renderBroadcast));
+$('bc-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const title = $('bc-title').value.trim(), msg = $('bc-msg').value.trim();
+  if (!title || !msg) { toast('Add a title and a message first.'); return; }
+  const g = groups(), n = AUD[$('aud').value](g).length;
+  if (!n) { toast('No member matches this audience, so nothing was sent.'); return; }
+  const ch = document.querySelector('input[name=ch]:checked').value, aud = $('aud').selectedOptions[0].textContent;
+  const h = AX.broadcasts(); h.unshift({ t: new Date().toISOString(), ch, aud, title, msg, n }); AX.saveBroadcasts(h);
+  AX.log('Sent ' + ch.toLowerCase() + ' "' + title + '" to ' + n + ' member' + (n === 1 ? '' : 's'));
+  renderBroadcast(); renderOverview(); toast('Sent to ' + n + ' member' + (n === 1 ? '' : 's') + ' (simulated, nothing really leaves this page).');
+});
+['s-otp', 's-noteon'].forEach((id) => { const el = $(id); const t = () => el.setAttribute('aria-checked', String(el.getAttribute('aria-checked') !== 'true')); el.addEventListener('click', t); el.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); t(); } }); });
+$('save').addEventListener('click', () => {
+  const s = AX.settings();
+  s.partnerCode = $('s-code').value.trim() || s.partnerCode; s.partnerLink = $('s-link').value.trim() || s.partnerLink;
+  ['1', '2', '3'].forEach((n) => { s.tiers['t' + n] = { deposit: Number($('d' + n).value) || s.tiers['t' + n].deposit, label: $('l' + n).value.trim() || s.tiers['t' + n].label }; });
+  s.otp = $('s-otp').getAttribute('aria-checked') === 'true'; s.announcement = $('s-note').value.trim(); s.announceOn = $('s-noteon').getAttribute('aria-checked') === 'true';
+  AX.saveSettings(s); AX.log('Saved settings'); renderOverview(); toast('Saved. Open the membership page or the dashboard to see it.');
+});
+$('reset').addEventListener('click', (e) => { e.preventDefault(); AX.reset(); list = AX.load(); renderSettings(); renderAll(); toast('Demo data reset.'); });
+renderSettings(); renderAll();
 </script>
 </body>
 </html>
