@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<!-- AurumX share card, 1200x630. Render: python tools/og/build.py (needs Playwright + network for the Google fonts). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden;background:#0e0e0e}
+.card{position:relative;width:1200px;height:630px;background:
+  radial-gradient(520px 420px at 900px 330px,rgba(212,168,67,.16),rgba(212,168,67,0) 70%),#0e0e0e;color:#efece3;font-family:'DM Sans',sans-serif}
+.logo{position:absolute;left:64px;top:54px;height:44px}
+.kicker{position:absolute;left:64px;top:152px;display:flex;align-items:center;gap:12px;font:500 14px 'DM Mono',monospace;letter-spacing:.12em;color:#efece3}
+.kicker i{width:9px;height:9px;border-radius:50%;background:#d4a843;box-shadow:0 0 0 5px rgba(212,168,67,.18)}
+h1{position:absolute;left:64px;top:196px;width:600px;font:600 62px/1.03 'Plus Jakarta Sans',sans-serif;letter-spacing:-.045em}
+h1 em{display:block;text-wrap:balance;font-style:normal;font-weight:600;color:#d8b45c}
+.chips{position:absolute;left:64px;top:424px;display:flex;gap:10px}
+.chips span{border:1px solid rgba(239,236,227,.22);border-radius:999px;padding:9px 16px;font:500 12px 'DM Mono',monospace;letter-spacing:.1em;color:#c9cbc2}
+.cta{position:absolute;left:64px;top:500px;display:inline-flex;align-items:center;gap:22px;background:#d4a843;color:#17150f;border-radius:8px;padding:19px 26px;font:500 15px 'DM Mono',monospace;letter-spacing:.09em}
+.phones{position:absolute;right:46px;top:34px;width:520px;height:570px}
+.phones img{position:absolute;display:block;filter:drop-shadow(0 26px 44px rgba(0,0,0,.7))}
+.phones .b{left:0;top:62px;height:468px}
+.phones .a{right:2px;top:4px;height:560px;z-index:2}
+</style></head>
+<body><div class="card">
+  <img class="logo" src="../../assets/logo-wordmark.webp" alt="AurumX">
+  <div class="kicker"><i></i>XAUUSD / STRUCTURED SIGNALS</div>
+  <h1>GOLD SIGNALS<em>WITH A PLAN BEHIND THEM.</em></h1>
+  <div class="chips"><span>ENTRY &middot; TP &middot; SL</span><span>RISK PLANNER</span><span>REAL-TIME ALERTS</span></div>
+  <div class="cta">BECOME A MEMBER <span>&rarr;</span></div>
+  <div class="phones">
+    <img class="b" src="../../assets/mock-phone-planner-angle.webp" alt="">
+    <img class="a" src="../../assets/mock-phone-signal.webp" alt="">
+  </div>
+</div></body></html>

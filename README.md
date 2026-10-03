@@ -28,3 +28,7 @@ Applications live in the browser's `localStorage` only (key `aurumx_demo_apps_v1
 The Chart tab uses TradingView Lightweight Charts v5 (Apache-2.0), vendored in `assets/lightweight-charts.js`, with generated sample candles. Its TradingView attribution mark is kept on purpose.
 
 All pages carry `noindex`. Deploy: the Vercel project is linked to this repository, so every push to `main` publishes to https://aurumxmockup.vercel.app (the repository root is served as a static site).
+
+## Share card (Open Graph)
+
+`assets/og-card.png` is 1200x630. Its source is `tools/og/og-card.html`; re-render it with `python tools/og/build.py` (needs Playwright and network for the Google fonts). Every page carries the Open Graph and Twitter tags. The landing page uses a 52-character title, a 133-character meta description and a 108-character `og:description`. `og:image` points at `https://aurumxmockup.vercel.app/assets/og-card.png`: when AurumX gets its own domain, change `SITE` in the page heads (search for `aurumxmockup.vercel.app`).
